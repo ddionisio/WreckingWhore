@@ -11,7 +11,6 @@ public class Stats : MonoBehaviour {
 
     public float maxHP;
     public float maxPower;
-    public float attack;
     public float defense;
 
     public bool powerDecay = false;
@@ -50,9 +49,11 @@ public class Stats : MonoBehaviour {
     }
 
     /// <summary>
-    /// Deal damage based on given attacker stats
+    /// Deal damage, a computation will determine amount of hitpoints removed
     /// </summary>
-    public void Damage(Stats attacker) {
+    public void Damage(float amt) {
+        float dmg = Mathf.Clamp(amt - defense, 0, Mathf.Infinity);
+        hp -= dmg;
     }
 
     public void Reset() {
