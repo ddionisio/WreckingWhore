@@ -310,6 +310,12 @@ public class Enemy : EntityBase {
         }
     }
 
+    /*void OnTriggerStay(Collider col) {
+        if(col.GetComponent<HitTrigger>()) {
+            Debug.Log("fuck");
+        }
+    }*/
+
     void OnHit(HitTrigger hit) {
         //Debug.Log("hit: " + hit.damage);
         switch((EntityState)state) {

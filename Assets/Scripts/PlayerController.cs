@@ -163,7 +163,6 @@ public class PlayerController : MonoBehaviour {
                 mPlatformer.rigidbody.velocity = Vector3.zero;
 
                 if(mKnockbackActive) {
-                    CalculateKnockbackDir();
                     mKnockbackCurTime = 0.0f;
                 }
                 else
@@ -193,7 +192,9 @@ public class PlayerController : MonoBehaviour {
 
     void OnInputAttackPrimary(InputManager.Info dat) {
         if(dat.state == InputManager.State.Pressed) {
-            mPlayer.state = (int)EntityState.Attack;
+            if(mPlayer.canAttack) {
+                mPlayer.state = (int)EntityState.Attack;
+            }
         }
         else if(dat.state == InputManager.State.Released) {
             mPlayer.state = (int)EntityState.Normal;
@@ -217,13 +218,17 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    void CalculateKnockbackDir() {
-        float d = mPlatformer.collider.bounds.center.x - mPlayer.lastHitPosition.x;
+    public void CalculateKnockbackDir(Vector3 lastHit) {
+        float d = mPlatformer.collider.bounds.center.x - lastHit.x;
         if(d == 0)
             d = 1;
 
         Vector3 delta = new Vector3(Mathf.Sign(d), 0);
         mKnockbackDir = Quaternion.AngleAxis(delta.x < 0 ? -knockbackAngle : knockbackAngle, Vector3.forward) * delta;
+    }
+
+    public void SetKnockbackDir(Vector3 dir) {
+        mKnockbackDir = dir;
     }
 
     IEnumerator DoKnockback() {
@@ -232,8 +237,6 @@ public class PlayerController : MonoBehaviour {
         mKnockbackActive = true;
         mKnockbackCurTime = 0.0f;
 
-        CalculateKnockbackDir();
-
         while(mKnockbackActive && mKnockbackCurTime < knockbackDelay) {
             mPlatformer.rigidbody.AddForce(mKnockbackDir * knockbackForce);
             mKnockbackCurTime += Time.fixedDeltaTime;
@@ -241,5 +244,18 @@ public class PlayerController : MonoBehaviour {
         }
 
         mKnockbackActive = false;
+    }
+
+    void Update() {
+        switch((EntityState)mPlayer.state) {
+            case EntityState.Attack:
+                float pow = mPlayer.powerAttackConsume * Time.deltaTime;
+
+                if(mPlayer.stats.power < pow)
+                    mPlayer.state = (int)EntityState.Normal;
+                else
+                    mPlayer.stats.power -= pow;
+                break;
+        }
     }
 }

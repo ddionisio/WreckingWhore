@@ -13,21 +13,20 @@ public class Stats : MonoBehaviour {
     public float maxPower;
     public float defense;
 
-    public bool powerDecay = false;
-    public float powerDecayDelay;
-    public float powerDecayPerSecond;
+    public float powerPerSec = 1.0f;
 
     public event OnStatChange statCallback;
 
     private float mCurHP;
     private float mCurPower;
+    private bool mPowerRegenActive = false;
 
     public float hp {
         get { return mCurHP; }
         set {
             if(mCurHP != value) {
                 float prev = mCurHP;
-                mCurHP = Mathf.Clamp(value, 0.0f, Mathf.Infinity); //allow overflow?
+                mCurHP = Mathf.Clamp(value, 0.0f, maxHP); //allow overflow?
 
                 if(statCallback != null)
                     statCallback(this, Type.HP, mCurHP - prev);
@@ -40,13 +39,15 @@ public class Stats : MonoBehaviour {
         set {
             if(mCurPower != value) {
                 float prev = mCurPower;
-                mCurPower = Mathf.Clamp(value, 0.0f, Mathf.Infinity); //allow overflow?
+                mCurPower = Mathf.Clamp(value, 0.0f, maxPower); //allow overflow?
 
                 if(statCallback != null)
                     statCallback(this, Type.Power, mCurPower - prev);
             }
         }
     }
+
+    public bool powerRegenActive { get { return mPowerRegenActive; } set { mPowerRegenActive = value; } }
 
     /// <summary>
     /// Deal damage, a computation will determine amount of hitpoints removed
@@ -72,5 +73,11 @@ public class Stats : MonoBehaviour {
 
     void Awake() {
         Reset();
+    }
+
+    void Update() {
+        if(mPowerRegenActive) {
+            power += powerPerSec * Time.deltaTime;
+        }
     }
 }

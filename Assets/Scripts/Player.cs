@@ -11,7 +11,16 @@ public class Player : EntityBase {
     public float hurtDelay = 0.5f;
     public float hurtInvul = 1.0f;
 
+    public LayerMask spikeCollisionMask;
+    public float spikeDamage = 2.5f;
+
+    public float powerAttackConsume = 1.0f;
+
     public SpriteColorBlink blinkSprite;
+
+    private float mLastHurtTime;
+
+    private bool mPauseInputEnabled;
 
     public static Player instance { get { return mInstance; } }
 
@@ -26,10 +35,41 @@ public class Player : EntityBase {
         }
     }
 
-    private float mLastHurtTime;
+    public bool canAttack {
+        get {
+            return ((EntityState)state == EntityState.Normal || (EntityState)state == EntityState.Attack) && mStats.power >= powerAttackConsume;
+        }
+    }
+
+    public bool pauseInputEnabled {
+        get { return mPauseInputEnabled; }
+        set {
+            if(mPauseInputEnabled != value) {
+                mPauseInputEnabled = value;
+
+                InputManager input = Main.instance ? Main.instance.input : null;
+                if(input) {
+                    if(mPauseInputEnabled) {
+                        input.AddButtonCall(0, InputAction.Menu, OnInputPause);
+                    }
+                    else {
+                        input.RemoveButtonCall(0, InputAction.Menu, OnInputPause);
+                    }
+                }
+            }
+        }
+    }
 
     protected override void StateChanged() {
         switch((EntityState)state) {
+            case EntityState.Normal:
+                mStats.powerRegenActive = true;
+                break;
+
+            case EntityState.Attack:
+                mStats.powerRegenActive = false;
+                break;
+
             case EntityState.Hurt:
                 Blink(hurtDelay);
                 mLastHurtTime = Time.time;
@@ -68,6 +108,7 @@ public class Player : EntityBase {
     protected override void OnDestroy() {
         if(mInstance == this) {
             //dealloc here
+            pauseInputEnabled = false;
 
             base.OnDestroy();
         }
@@ -75,7 +116,7 @@ public class Player : EntityBase {
 
     public override void SpawnFinish() {
         //start ai, player control, etc
-
+        mStats.Reset();
         state = (int)EntityState.Normal;
     }
 
@@ -110,6 +151,8 @@ public class Player : EntityBase {
 
         CameraBound cb = mCtrl.platformer.eye.GetComponentInChildren<CameraBound>();
         cb.bounds = LevelManager.instance.levelBounds;
+
+        pauseInputEnabled = true;
     }
 
     void OnStatChange(Stats stat, Stats.Type which, float delta) {
@@ -129,6 +172,7 @@ public class Player : EntityBase {
 
         //check invul
         if((state == (int)EntityState.Normal || state == (int)EntityState.Attack) && !isInvulnerable) {
+            mCtrl.CalculateKnockbackDir(mLastHitPosition);
             mStats.Damage(hit.damage);
         }
     }
@@ -138,7 +182,35 @@ public class Player : EntityBase {
 
         //check invul
         if((state == (int)EntityState.Normal || state == (int)EntityState.Attack) && !isInvulnerable) {
+            mCtrl.CalculateKnockbackDir(mLastHitPosition);
             mStats.Damage(proj.damage);
         }
+    }
+
+    void OnCollisionStay(Collision col) {
+        if(((1 << col.gameObject.layer) & spikeCollisionMask) != 0) {
+            if((state == (int)EntityState.Normal || state == (int)EntityState.Attack) && !isInvulnerable) {
+                mCtrl.SetKnockbackDir(col.contacts[0].normal);
+                mStats.Damage(spikeDamage);
+            }
+        }
+    }
+
+    void OnInputPause(InputManager.Info dat) {
+        if(dat.state == InputManager.State.Pressed) {
+            UIModalManager.instance.ModalOpen("pause");
+        }
+    }
+
+    void OnUIModalActive() {
+        Main.instance.sceneManager.Pause();
+
+        pauseInputEnabled = false;
+    }
+
+    void OnUIModalInactive() {
+        Main.instance.sceneManager.Resume();
+
+        pauseInputEnabled = true;
     }
 }
