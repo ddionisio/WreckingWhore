@@ -8,8 +8,9 @@ public class EnemySpawner : MonoBehaviour {
 
     public int maxSpawns;
     public float waitDelay;
-    public float minDistance;
-    public float maxDistance;
+    public bool spawnIsRadius;
+    public float minDistance = 1;
+    public float maxDistance = 1;
 
     public bool alwaysActive = false;
 
@@ -57,8 +58,18 @@ public class EnemySpawner : MonoBehaviour {
             }
             else {
                 Vector3 pos = transform.position;
-                float ofsX = Random.Range(minDistance, maxDistance);
-                pos.x += ofsX;
+
+                if(spawnIsRadius) {
+                    float r = Random.Range(minDistance, maxDistance);
+                    Vector2 d = Random.insideUnitCircle.normalized;
+                    pos.x += d.x * r;
+                    pos.y += d.y * r;
+                }
+                else {
+                    float ofsX = Random.Range(minDistance, maxDistance);
+                    pos.x += ofsX;
+                }
+
                 Transform t = PoolController.Spawn(group, type, type, null, pos, Quaternion.identity);
                 EntityBase ent = t.GetComponent<EntityBase>();
                 ent.releaseCallback += OnEntityRelease;
@@ -73,5 +84,24 @@ public class EnemySpawner : MonoBehaviour {
     void OnEntityRelease(EntityBase ent) {
         mCurSpawns--;
         ent.releaseCallback -= OnEntityRelease;
+    }
+
+    void OnDrawGizmos() {
+        Gizmos.color = Color.blue;
+
+        if(spawnIsRadius) {
+            Gizmos.DrawWireSphere(transform.position, maxDistance);
+            Gizmos.color = Color.blue * 0.5f;
+            Gizmos.DrawWireSphere(transform.position, minDistance);
+        }
+        else {
+            Vector3 p1 = transform.position;
+            p1.x += minDistance;
+
+            Vector3 p2 = transform.position;
+            p2.x += maxDistance;
+
+            Gizmos.DrawLine(p1, p2);
+        }
     }
 }

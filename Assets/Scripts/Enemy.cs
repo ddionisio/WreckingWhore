@@ -95,6 +95,8 @@ public class Enemy : EntityBase {
                 break;
 
             case EntityState.Dead:
+                mStats.Reset();
+
                 if(bodyHit)
                     bodyHit.gameObject.SetActive(false);
                 //SetCollisionActive(false);

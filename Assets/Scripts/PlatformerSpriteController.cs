@@ -4,6 +4,11 @@ using System.Collections;
 public class PlatformerSpriteController : MonoBehaviour {
     public delegate void Callback(PlatformerSpriteController ctrl);
 
+    public enum State {
+        None,
+        Attack
+    }
+
     public tk2dSpriteAnimator anim;
     public PlatformerController controller;
 
@@ -15,6 +20,8 @@ public class PlatformerSpriteController : MonoBehaviour {
 
     public string wallStickClip = "wall";
     public string wallJumpClip = "wallJump";
+
+    public string attackClip = "attack";
 
     public ParticleSystem wallStickParticle;
 
@@ -29,11 +36,23 @@ public class PlatformerSpriteController : MonoBehaviour {
     private tk2dSpriteAnimationClip mWallStick;
     private tk2dSpriteAnimationClip mWallJump;
 
+    private tk2dSpriteAnimationClip mAttack;
+
     private bool mIsLeft;
     private bool mAnimationActive = true;
+    private State mState;
 
     public bool isLeft { get { return mIsLeft; } }
     public bool animationActive { get { return mAnimationActive; } set { mAnimationActive = value; } }
+
+    public State state {
+        get { return mState; }
+        set {
+            if(mState != value) {
+                mState = value;
+            }
+        }
+    }
 
     public void ResetAnimation() {
         mAnimationActive = true;
@@ -70,6 +89,8 @@ public class PlatformerSpriteController : MonoBehaviour {
         mWallStick = anim.GetClipByName(wallStickClip);
         mWallJump = anim.GetClipByName(wallJumpClip);
 
+        mAttack = anim.GetClipByName(attackClip);
+
         if(controller == null)
             controller = GetComponent<PlatformerController>();
     }
@@ -88,54 +109,66 @@ public class PlatformerSpriteController : MonoBehaviour {
         if(mAnimationActive) {
             bool left = mIsLeft;
 
-            if(controller.isJumpWall) {
-                anim.Play(mWallJump);
+            switch(mState) {
+                case State.None:
+                    if(controller.isJumpWall) {
+                        anim.Play(mWallJump);
 
-                left = controller.localVelocity.x < 0.0f;
-            }
-            else if(controller.isWallStick) {
-                if(wallStickParticle) {
-                    if(wallStickParticle.isStopped) {
-                        wallStickParticle.Play();
+                        left = controller.localVelocity.x < 0.0f;
                     }
+                    else if(controller.isWallStick) {
+                        if(wallStickParticle) {
+                            if(wallStickParticle.isStopped) {
+                                wallStickParticle.Play();
+                            }
 
-                    wallStickParticle.loop = true;
-                }
+                            wallStickParticle.loop = true;
+                        }
 
-                anim.Play(mWallStick);
+                        anim.Play(mWallStick);
 
-                left = M8.MathUtil.CheckSide(controller.wallStickCollide.normal, controller.dirHolder.up) == M8.MathUtil.Side.Right;
+                        left = M8.MathUtil.CheckSide(controller.wallStickCollide.normal, controller.dirHolder.up) == M8.MathUtil.Side.Right;
 
-            }
-            else {
-                if(wallStickParticle)
-                    wallStickParticle.loop = false;
+                    }
+                    else {
+                        if(wallStickParticle)
+                            wallStickParticle.loop = false;
 
-                if(controller.isGrounded) {
+                        if(controller.isGrounded) {
+                            if(controller.moveSide != 0.0f) {
+                                anim.Play(mMove);
+                            }
+                            else {
+                                anim.Play(mIdle);
+                            }
+                        }
+                        else {
+                            tk2dSpriteAnimationClip clip;
+
+                            if(controller.localVelocity.y <= 0.0f) {
+                                clip = GetMidAirClip(mDowns);
+                            }
+                            else {
+                                clip = GetMidAirClip(mUps);
+                            }
+
+                            if(clip != null)
+                                anim.Play(clip);
+                        }
+
+                        if(controller.moveSide != 0.0f) {
+                            left = controller.moveSide < 0.0f;
+                        }
+                    }
+                    break;
+
+                case State.Attack:
+                    anim.Play(mAttack);
+
                     if(controller.moveSide != 0.0f) {
-                        anim.Play(mMove);
+                        left = controller.moveSide < 0.0f;
                     }
-                    else {
-                        anim.Play(mIdle);
-                    }
-                }
-                else {
-                    tk2dSpriteAnimationClip clip;
-
-                    if(controller.localVelocity.y <= 0.0f) {
-                        clip = GetMidAirClip(mDowns);
-                    }
-                    else {
-                        clip = GetMidAirClip(mUps);
-                    }
-
-                    if(clip != null)
-                        anim.Play(clip);
-                }
-
-                if(controller.moveSide != 0.0f) {
-                    left = controller.moveSide < 0.0f;
-                }
+                    break;
             }
 
             if(mIsLeft != left) {

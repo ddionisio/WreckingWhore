@@ -4,12 +4,13 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
     public const int playerIndex = 0;
 
-    public WeaponMelee hammer;
-    public WeaponWhip whip;
+    public GameObject weaponHolder;
 
     public float knockbackForce = 40.0f;
     public float knockbackDelay = 0.2f;
     public float knockbackAngle = 30.0f;
+
+    public bool startWeaponEnabled = true;
 
     private Player mPlayer;
     private PlatformerController mPlatformer;
@@ -19,6 +20,9 @@ public class PlayerController : MonoBehaviour {
     private bool mKnockbackActive;
     private float mKnockbackCurTime;
     private Vector3 mKnockbackDir;
+    private Weapon.Dir mWeaponLastDir = Weapon.Dir.Right;
+
+    private Weapon[] mWeapons;
 
     public Player player { get { return mPlayer; } }
     public PlatformerController platformer { get { return mPlatformer; } }
@@ -64,24 +68,59 @@ public class PlayerController : MonoBehaviour {
 
         mPlatformerSpriteCtrl = GetComponent<PlatformerSpriteController>();
 
-        hammer.finishCallback += OnAttackFinish;
-        whip.finishCallback += OnAttackFinish;
+        mWeapons = weaponHolder.GetComponentsInChildren<Weapon>(true);
+
+        weaponHolder.SetActive(false);
     }
 
     void EntityStart(EntityBase ent) {
         mPlayer = ent as Player;
         mPlayer.setStateCallback += OnEntitySetState;
+
+        weaponHolder.SetActive(startWeaponEnabled);
     }
 
     // Update is called once per frame
-    void Update() {
+    void FixedUpdate() {
+        switch((EntityState)mPlayer.state) {
+            case EntityState.Normal:
+            case EntityState.Attack:
+                InputManager input = Main.instance.input;
+                float xAxis = input.GetAxis(0, InputAction.Horizontal);
+                float yAxis = input.GetAxis(0, InputAction.Vertical);
+
+                if(yAxis < -0.01f) {
+                    mWeaponLastDir = Weapon.Dir.Down;
+                    for(int i = 0, max = mWeapons.Length; i < max; i++)
+                        mWeapons[i].SetDir(Weapon.Dir.Down);
+                }
+                else if(yAxis > 0.01f) {
+                    mWeaponLastDir = Weapon.Dir.Up;
+                    for(int i = 0, max = mWeapons.Length; i < max; i++)
+                        mWeapons[i].SetDir(Weapon.Dir.Up);
+                }
+                else if(xAxis < -0.01f) {
+                    mWeaponLastDir = Weapon.Dir.Left;
+                    for(int i = 0, max = mWeapons.Length; i < max; i++)
+                        mWeapons[i].SetDir(Weapon.Dir.Left);
+                }
+                else if(xAxis > 0.01f) {
+                    mWeaponLastDir = Weapon.Dir.Right;
+                    for(int i = 0, max = mWeapons.Length; i < max; i++)
+                        mWeapons[i].SetDir(Weapon.Dir.Right);
+                }
+                else if(mWeaponLastDir == Weapon.Dir.Up || mWeaponLastDir == Weapon.Dir.Down) {
+                    mWeaponLastDir = mPlatformerSpriteCtrl.isLeft ? Weapon.Dir.Left : Weapon.Dir.Right;
+                    for(int i = 0, max = mWeapons.Length; i < max; i++)
+                        mWeapons[i].SetDir(mWeaponLastDir);
+                }
+                break;
+        }
     }
 
     void OnEntitySetState(EntityBase ent) {
         switch((EntityState)ent.prevState) {
             case EntityState.Normal:
-                inputEnabled = false;
-                mPlatformerSpriteCtrl.animationActive = false;
                 break;
 
             case EntityState.Hurt:
@@ -91,25 +130,34 @@ public class PlayerController : MonoBehaviour {
                 break;
 
             case EntityState.Attack:
-                if(hammer.isActive)
-                    hammer.Cancel();
-
-                if(whip.isActive)
-                    whip.Cancel();
+                foreach(Weapon weapon in mWeapons)
+                    weapon.Cancel();
                 break;
 
         }
 
         switch((EntityState)ent.state) {
             case EntityState.Normal:
-                mPlatformerSpriteCtrl.animationActive = true;
                 inputEnabled = true;
+
+                mPlatformerSpriteCtrl.animationActive = true;
+                mPlatformerSpriteCtrl.state = PlatformerSpriteController.State.None;
                 break;
 
             case EntityState.Attack:
+                inputEnabled = true;
+
+                mPlatformerSpriteCtrl.animationActive = true;
+                mPlatformerSpriteCtrl.state = PlatformerSpriteController.State.Attack;
+
+                foreach(Weapon weapon in mWeapons)
+                    weapon.Attack();
                 break;
 
             case EntityState.Hurt:
+                inputEnabled = false;
+
+                mPlatformer.moveSide = 0.0f;
                 mPlatformer.lockDrag = true;
                 mPlatformer.rigidbody.drag = 0.0f;
                 mPlatformer.rigidbody.velocity = Vector3.zero;
@@ -121,15 +169,23 @@ public class PlayerController : MonoBehaviour {
                 else
                     StartCoroutine(DoKnockback());
 
+                mPlatformerSpriteCtrl.animationActive = false;
                 mPlatformerSpriteCtrl.anim.Play("hurt");
                 break;
 
             case EntityState.Dead:
+                inputEnabled = false;
 
+                mPlatformer.moveSide = 0.0f;
+                mPlatformer.rigidbody.velocity = Vector3.zero;
+
+                mPlatformerSpriteCtrl.animationActive = false;
                 mPlatformerSpriteCtrl.anim.Play("dead");
                 break;
 
             case EntityState.Invalid:
+                inputEnabled = false;
+
                 mPlatformer.ResetCollision();
                 break;
         }
@@ -138,14 +194,15 @@ public class PlayerController : MonoBehaviour {
     void OnInputAttackPrimary(InputManager.Info dat) {
         if(dat.state == InputManager.State.Pressed) {
             mPlayer.state = (int)EntityState.Attack;
-            hammer.Attack(mPlatformerSpriteCtrl.isLeft);
         }
+        else if(dat.state == InputManager.State.Released) {
+            mPlayer.state = (int)EntityState.Normal;
+        }
+
     }
 
     void OnInputAttackSecondary(InputManager.Info dat) {
         if(dat.state == InputManager.State.Pressed) {
-            mPlayer.state = (int)EntityState.Attack;
-            whip.Attack(mPlatformerSpriteCtrl.isLeft);
         }
     }
 

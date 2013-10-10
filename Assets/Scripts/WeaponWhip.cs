@@ -16,10 +16,21 @@ public class WeaponWhip : Weapon {
     private tk2dSpriteAnimationClip mClip;
     private bool mIsLeft;
 
-    public override void Attack(bool isLeft) {
-        base.Attack(isLeft);
+    public override void SetDir(Dir dir) {
+        base.SetDir(dir);
 
-        mIsLeft = isLeft;
+        switch(mDir) {
+            case Dir.Left:
+                mIsLeft = true;
+                break;
+            case Dir.Right:
+                mIsLeft = false;
+                break;
+        }
+    }
+
+    public override void Attack() {
+        base.Attack();
 
         anim.Play(mClip);
     }

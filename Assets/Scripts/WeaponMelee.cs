@@ -8,8 +8,8 @@ public class WeaponMelee : Weapon {
 
     private tk2dSpriteAnimationClip mClip;
 
-    public override void Attack(bool isLeft) {
-        base.Attack(isLeft);
+    public override void Attack() {
+        base.Attack();
 
         anim.Play(mClip);
     }
