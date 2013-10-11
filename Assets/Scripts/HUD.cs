@@ -29,6 +29,9 @@ public class HUD : MonoBehaviour {
         if(bossStats && bossHP) {
             bossStats.statCallback += OnBossStatChange;
         }
+        else {
+            bossHP.gameObject.SetActive(false);
+        }
     }
 
     void OnBossStatChange(Stats stat, Stats.Type which, float delta) {

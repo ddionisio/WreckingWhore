@@ -155,6 +155,8 @@ public class PlayerController : MonoBehaviour {
                 break;
 
             case EntityState.Hurt:
+                SoundPlayerGlobal.instance.Play("ouch");
+
                 inputEnabled = false;
 
                 mPlatformer.moveSide = 0.0f;
@@ -192,7 +194,9 @@ public class PlayerController : MonoBehaviour {
 
     void OnInputAttackPrimary(InputManager.Info dat) {
         if(dat.state == InputManager.State.Pressed) {
-            if(mPlayer.canAttack) {
+            if(weaponHolder.activeSelf && mPlayer.canAttack) {
+                SoundPlayerGlobal.instance.Play("fire");
+
                 mPlayer.state = (int)EntityState.Attack;
             }
         }

@@ -3,4 +3,14 @@
 		"key":"title",
 		"text":"Super"
 	},
+	
+	{
+		"key":"gooby_text_0",
+		"text":"It is dangerous to go alone!"
+	},
+	
+	{
+		"key":"gooby_text_1",
+		"text":"Take this with you!"
+	}
 ]

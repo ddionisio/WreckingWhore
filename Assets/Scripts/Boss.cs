@@ -92,6 +92,9 @@ public class Boss : EntityBase {
 
     private Vector3 mDeathPrepStartPos;
 
+    private int[] mShuffleStates;
+    private int mShuffleInd;
+
     public Stats stats { get { return mStats; } }
 
     public bool invulnerable {
@@ -230,6 +233,13 @@ public class Boss : EntityBase {
         mPattern2FixedY = pattern2FixedY.position.y;
 
         pattern3EyesRotate.SetActive(false);
+
+        //private int[] mShuffleStates;
+        //private int mShuffleInd;
+
+        mShuffleStates = new int[] { (int)State.Pattern1, (int)State.Pattern2, (int)State.Pattern3 };
+        M8.ArrayUtil.Shuffle(mShuffleStates);
+        mShuffleInd = 0;
     }
 
     // Use this for initialization
@@ -271,7 +281,14 @@ public class Boss : EntityBase {
 
                 if(mCurTime >= wait) {
                     //state = (int)State.Pattern3;
-                    state = Random.Range((int)State.Pattern1, (int)State.MaxPatternRandom);
+                    //state = Random.Range((int)State.Pattern1, (int)State.MaxPatternRandom);
+                    if(mShuffleInd == mShuffleStates.Length) {
+                        M8.ArrayUtil.Shuffle(mShuffleStates);
+                        mShuffleInd = 0;
+                    }
+
+                    state = mShuffleStates[mShuffleInd];
+                    mShuffleInd++;
                 }
                 else {
                     transform.position = Vector3.SmoothDamp(curPos, mOrigPos, ref mCurFollowVel, revertDelay, dampMaxSpeed, dt);
