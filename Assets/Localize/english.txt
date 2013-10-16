@@ -12,5 +12,55 @@
 	{
 		"key":"gooby_text_1",
 		"text":"Take this with you!"
-	}
+	},
+	
+	{
+		"key":"level0",
+		"text":"Why?"
+	},
+	
+	{
+		"key":"level1",
+		"text":"A lie told often enough becomes the truth."
+	},
+	{
+		"key":"level2",
+		"text":"You cannot make a revolution with silk gloves."
+	},
+	{
+		"key":"level3",
+		"text":"I trust no one, not even myself."
+	},
+	{
+		"key":"level4",
+		"text":"I believe in one thing only, the power of human will."
+	},
+	{
+		"key":"level5",
+		"text":"People like me sound like a lot of big cannons."
+	},
+	{
+		"key":"level6",
+		"text":"Learn from the masses, and then teach them."
+	},
+	{
+		"key":"level7",
+		"text":"Once all struggle is grasped, miracles are possible."
+	},
+	{
+		"key":"level8",
+		"text":"The most important thing when ill is to never lose heart."
+	},
+	{
+		"key":"level9",
+		"text":"He alone, who owns the youth, gains the future."
+	},
+	{
+		"key":"level10",
+		"text":"Make the lie big, make it simple, keep saying it, and eventually they will believe it."
+	},
+	{
+		"key":"boss",
+		"text":"I am she as you are she as you are me. Let us die together."
+	},
 ]

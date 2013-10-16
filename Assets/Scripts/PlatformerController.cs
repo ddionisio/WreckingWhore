@@ -315,25 +315,20 @@ public class PlatformerController : RigidBodyController {
             Vector3 up = dirHolder.up;
 
             if(collisionFlags == CollisionFlags.Sides) {
-                foreach(KeyValuePair<Collider, List<CollideInfo>> pair in mColls) {
-                    bool done = false;
-                    foreach(CollideInfo inf in pair.Value) {
-                        if(inf.flag == CollisionFlags.Sides) {
-                            float a = Vector3.Angle(up, inf.normal);
-                            if(a >= 90.0f - wallStickAngleOfs && a <= 90.0f + wallStickAngleOfs) {
-                                //wallStickForce
-                                mWallStickCollInfo = inf;
-                                mWallStickSide = M8.MathUtil.CheckSide(mWallStickCollInfo.normal, dirHolder.up);
-                                mWallSticking = true;
-                                mJump = false;
-                                lockDrag = false;
-                                done = true;
-                                break;
-                            }
+                for(int i = 0; i < mCollCount; i++) {
+                    CollideInfo inf = mColls[i];
+                    if(inf.flag == CollisionFlags.Sides) {
+                        float a = Vector3.Angle(up, inf.normal);
+                        if(a >= 90.0f - wallStickAngleOfs && a <= 90.0f + wallStickAngleOfs) {
+                            //wallStickForce
+                            mWallStickCollInfo = inf;
+                            mWallStickSide = M8.MathUtil.CheckSide(mWallStickCollInfo.normal, dirHolder.up);
+                            mWallSticking = true;
+                            mJump = false;
+                            lockDrag = false;
+                            break;
                         }
                     }
-                    if(done)
-                        break;
                 }
             }
 

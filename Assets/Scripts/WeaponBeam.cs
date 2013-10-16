@@ -11,6 +11,7 @@ public class WeaponBeam : Weapon {
 
     public float maxDistance = 100.0f;
     public float forceBack = 20.0f;
+    public float speedCap = 50.0f;
 
     private PlatformerController mOwnerCtrl;
     private Vector3 mBeamDir;
@@ -57,7 +58,7 @@ public class WeaponBeam : Weapon {
 
         _Active(mActive);
 
-        mOwnerCtrl.lockDrag = false;
+        //mOwnerCtrl.lockDrag = false;
     }
 
     public override void Attack() {
@@ -65,8 +66,8 @@ public class WeaponBeam : Weapon {
 
         _Active(mActive);
 
-        mOwnerCtrl.lockDrag = true;
-        mOwnerCtrl.rigidbody.drag = 0.0f;
+        //mOwnerCtrl.lockDrag = true;
+        //mOwnerCtrl.rigidbody.drag = 0.0f;
     }
 
     void _Active(bool _active) {
@@ -135,12 +136,23 @@ public class WeaponBeam : Weapon {
 
             SetBeamWidth(len);
 
-            Vector3 edgePos = particleEdge.transform.position;
-            Vector3 edgeNPos = beamHolder.position + mBeamDir * len;
-            edgeNPos.z = edgePos.z;
-            particleEdge.transform.position = edgeNPos;
+            if(!mOwnerCtrl.isGrounded || mDir == Dir.Down) {
+                Vector3 vel = mOwnerCtrl.rigidbody.velocity;
+                float spdSqr = vel.sqrMagnitude;
+                if(spdSqr > speedCap * speedCap) {
+                    mOwnerCtrl.rigidbody.velocity = (vel / Mathf.Sqrt(spdSqr)) * speedCap;
+                }
 
-            mOwnerCtrl.rigidbody.AddForce(-mBeamDir * forceBack);
+                if(mOwnerCtrl.isGrounded)
+                    mOwnerCtrl.rigidbody.drag = 0;
+
+                Vector3 edgePos = particleEdge.transform.position;
+                Vector3 edgeNPos = beamHolder.position + mBeamDir * len;
+                edgeNPos.z = edgePos.z;
+                particleEdge.transform.position = edgeNPos;
+
+                mOwnerCtrl.rigidbody.AddForce(-mBeamDir * forceBack);
+            }
         }
         else {
             if(particleEdge.isPlaying)

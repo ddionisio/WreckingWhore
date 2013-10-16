@@ -68,7 +68,7 @@ public class EnemyShootController : MonoBehaviour {
 
     void OnTriggerStay(Collider col) {
         if(mShootEnable && mLaunchedProjs.Count < maxCount) {
-            Vector3 pos = spawnPoint ? spawnPoint.position : transform.position;
+            Vector3 pos = transform.position;
             Transform seek = col.transform;
 
             Vector3 dir = seek.position - pos;

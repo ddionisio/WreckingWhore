@@ -40,12 +40,14 @@ public class PlayerController : MonoBehaviour {
 
                     if(mInputEnabled) {
                         input.AddButtonCall(playerIndex, InputAction.Attack1, OnInputAttackPrimary);
-                        input.AddButtonCall(playerIndex, InputAction.Attack2, OnInputAttackSecondary);
+                        input.AddButtonCall(playerIndex, InputAction.Jump, OnInputJump);
+                        //input.AddButtonCall(playerIndex, InputAction.Attack2, OnInputAttackSecondary);
                         input.AddButtonCall(playerIndex, InputAction.Special, OnInputSpecial);
                     }
                     else {
                         input.RemoveButtonCall(playerIndex, InputAction.Attack1, OnInputAttackPrimary);
-                        input.RemoveButtonCall(playerIndex, InputAction.Attack2, OnInputAttackSecondary);
+                        input.RemoveButtonCall(playerIndex, InputAction.Jump, OnInputJump);
+                        //input.RemoveButtonCall(playerIndex, InputAction.Attack2, OnInputAttackSecondary);
                         input.RemoveButtonCall(playerIndex, InputAction.Special, OnInputSpecial);
                     }
 
@@ -89,7 +91,7 @@ public class PlayerController : MonoBehaviour {
                 float xAxis = input.GetAxis(0, InputAction.Horizontal);
                 float yAxis = input.GetAxis(0, InputAction.Vertical);
 
-                if(yAxis < -0.01f) {
+                if(yAxis < -0.01f || ((EntityState)mPlayer.state == EntityState.Attack && input.IsDown(0, InputAction.Jump))) {
                     mWeaponLastDir = Weapon.Dir.Down;
                     for(int i = 0, max = mWeapons.Length; i < max; i++)
                         mWeapons[i].SetDir(Weapon.Dir.Down);
@@ -163,6 +165,7 @@ public class PlayerController : MonoBehaviour {
                 mPlatformer.lockDrag = true;
                 mPlatformer.rigidbody.drag = 0.0f;
                 mPlatformer.rigidbody.velocity = Vector3.zero;
+                mPlatformer.jumpCounterCurrent = mPlatformer.jumpCounter;
 
                 if(mKnockbackActive) {
                     mKnockbackCurTime = 0.0f;
@@ -201,13 +204,37 @@ public class PlayerController : MonoBehaviour {
             }
         }
         else if(dat.state == InputManager.State.Released) {
-            mPlayer.state = (int)EntityState.Normal;
+            if(mPlayer.state == (int)EntityState.Attack)
+                mPlayer.state = (int)EntityState.Normal;
         }
 
     }
 
-    void OnInputAttackSecondary(InputManager.Info dat) {
+    void OnInputJump(InputManager.Info dat) {
         if(dat.state == InputManager.State.Pressed) {
+            if(!mPlatformer.isGrounded && weaponHolder.activeSelf && mPlayer.canAttack) {
+                for(int i = 0, max = mWeapons.Length; i < max; i++)
+                    mWeapons[i].SetDir(Weapon.Dir.Down);
+
+                SoundPlayerGlobal.instance.Play("fire");
+
+                mPlayer.state = (int)EntityState.Attack;
+            }
+        }
+        else if(dat.state == InputManager.State.Released) {
+            InputManager input = Main.instance.input;
+            if(mPlayer.state == (int)EntityState.Attack && !input.IsDown(0, InputAction.Attack1)) {
+                mPlayer.state = (int)EntityState.Normal;
+            }
+        }
+    }
+
+    void OnInputAttackSecondary(InputManager.Info dat) {
+        OnInputAttackPrimary(dat);
+
+        if(dat.state == InputManager.State.Pressed) {
+            for(int i = 0, max = mWeapons.Length; i < max; i++)
+                mWeapons[i].SetDir(Weapon.Dir.Down);
         }
     }
 
