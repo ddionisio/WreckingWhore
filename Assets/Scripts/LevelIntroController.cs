@@ -10,7 +10,6 @@ public class LevelIntroController : MonoBehaviour {
     private string mToLevel;
     private bool mDone;
     private bool mInputReady;
-    private bool mKeyPressed;
 
     void Awake() {
 
@@ -20,7 +19,6 @@ public class LevelIntroController : MonoBehaviour {
     void Start() {
         mDone = false;
         mInputReady = false;
-        mKeyPressed = false;
 
         foreach(GameObject go in levelHighlights) {
             go.SetActive(false);
@@ -54,10 +52,9 @@ public class LevelIntroController : MonoBehaviour {
     }
 
     void Update() {
-        if(!mDone && mInputReady && mKeyPressed) {
-            DoFinish();
+        if(!mDone && mInputReady) {
+            if(Input.anyKeyDown)
+                DoFinish();
         }
-        else if(!mKeyPressed)
-            mKeyPressed = Input.anyKeyDown;
     }
 }

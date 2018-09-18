@@ -572,7 +572,7 @@ public class PlatformerController : RigidBodyController {
                     jumpCallback(this);
             }
             else if(!isSlopSlide) {
-                if(mJumpCounter >= 0 && (isGrounded || mJumpCounter < jumpCounter)) {
+                if(mJumpCounter < jumpCounter && (mJumpCounter > 0 || isGrounded)) {
                     lockDrag = true;
                     rigidbody.drag = airDrag;
 

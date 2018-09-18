@@ -1,0 +1,41 @@
+Initialize engine version: 4.2.1f4 (4d30acc925c2)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 9.0c [nvldumd.dll 24.21.13.9924]
+    Renderer: NVIDIA GeForce GTX 1080
+    Vendor:   NVIDIA
+    VRAM:     3072 MB (via DXGI)
+    Caps:     Shader=30 DepthRT=1 NativeDepth=1 NativeShadow=1 DF16=0 DF24=0 INTZ=1 RAWZ=0 NULL=1 RESZ=0 SlowINTZ=0
+Begin MonoManager ReloadAssembly
+Platform assembly: D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\Assembly-UnityScript-firstpass.dll (this message is harmless)
+Loading D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\Assembly-UnityScript-firstpass.dll into Unity Child Domain
+Platform assembly: D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\SixBySeven.dll (this message is harmless)
+Loading D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\SixBySeven.dll into Unity Child Domain
+Platform assembly: D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\HOTween.dll (this message is harmless)
+Loading D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\HOTween.dll into Unity Child Domain
+Platform assembly: D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\PlayMaker.dll (this message is harmless)
+Loading D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\PlayMaker.dll into Unity Child Domain
+- Completed reload, in  0.430 seconds
+desktop: 1920x1080 144Hz; virtual: 3600x1080 at 0,0
+<RI> Initializing input.
+<RI.Hid> Failed to create device file:
+ 2 The system cannot find the file specified.
+
+ 
+(Filename:  Line: 54)
+
+<RI> Input initialized.
+Platform assembly: D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: D:\Lab\WreckingWhore\Build-Win\Miley_Data\Managed\System.dll (this message is harmless)
+UnloadTime: 0.189184 ms
+Unloading 3 Unused Serialized files (Serialized files now loaded: 0 / Dirty serialized files: 0)
+
+Unloading 2 unused Assets to reduce memory usage. Loaded Objects now: 1554.
+Total: 0.696064 ms (FindLiveObjects: 0.035840 ms CreateObjectMapping: 0.016896 ms MarkObjects: 0.347904 ms  DeleteObjects: 0.005632 ms)
+
