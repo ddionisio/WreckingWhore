@@ -124,9 +124,9 @@ public class Boss : EntityBase {
         mEyeFollowPlayer = true;
         invulnerable = false;
 
-        if(!rigidbody.isKinematic) {
-            rigidbody.velocity = Vector3.zero;
-            rigidbody.isKinematic = true;
+        if(!GetComponent<Rigidbody>().isKinematic) {
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
+            GetComponent<Rigidbody>().isKinematic = true;
         }
 
         switch((State)state) {
@@ -159,7 +159,7 @@ public class Boss : EntityBase {
                     eye.up = Vector3.up;
                 }
 
-                rigidbody.isKinematic = false;
+                GetComponent<Rigidbody>().isKinematic = false;
                 bodyAnimator.Play(pattern3EyesFadeTake);
                 break;
 
@@ -412,11 +412,11 @@ public class Boss : EntityBase {
         dir.Normalize();
 
         //Debug.Log("spd: " + rigidbody.velocity.magnitude);
-        rigidbody.AddForce(dir * _accel, ForceMode.Acceleration);
+        GetComponent<Rigidbody>().AddForce(dir * _accel, ForceMode.Acceleration);
 
-        float sqrMag = rigidbody.velocity.sqrMagnitude;
+        float sqrMag = GetComponent<Rigidbody>().velocity.sqrMagnitude;
         if(sqrMag > _spdCap * _spdCap)
-            rigidbody.velocity = (rigidbody.velocity / Mathf.Sqrt(sqrMag)) * _spdCap;
+            GetComponent<Rigidbody>().velocity = (GetComponent<Rigidbody>().velocity / Mathf.Sqrt(sqrMag)) * _spdCap;
         //rigidbody.AddForce(mSteerToDir * _accel, ForceMode.Acceleration);
     }
 }

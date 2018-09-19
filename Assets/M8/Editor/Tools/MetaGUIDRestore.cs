@@ -34,7 +34,7 @@ namespace M8.Editor {
                 HashSet<string> filteredPaths = new HashSet<string>();
 
                 foreach(Object obj in Selection.objects) {
-                    string objMetaPath = AssetDatabase.GetTextMetaDataPathFromAssetPath(AssetDatabase.GetAssetPath(obj));
+                    string objMetaPath = AssetDatabase.GetTextMetaFilePathFromAssetPath(AssetDatabase.GetAssetPath(obj));
 
                     if(!string.IsNullOrEmpty(objMetaPath))
                         filteredPaths.Add(objMetaPath);

@@ -112,7 +112,7 @@ public class FPController : RigidBodyController {
             if(gravityController != null)
                 gravityController.enabled = true;
             else
-                rigidbody.useGravity = mLadderLastGravity;
+                GetComponent<Rigidbody>().useGravity = mLadderLastGravity;
 
             mLadderCounter = 0;
         }
@@ -121,7 +121,7 @@ public class FPController : RigidBodyController {
     protected override void WaterExit() {
         if(mJump) {
             if(jumpImpulse > 0.0f)
-                rigidbody.AddForce(dirHolder.up * jumpImpulse, ForceMode.Impulse);
+                GetComponent<Rigidbody>().AddForce(dirHolder.up * jumpImpulse, ForceMode.Impulse);
 
             mJumpLastTime = Time.fixedTime;
         }
@@ -145,8 +145,8 @@ public class FPController : RigidBodyController {
                 gravityController.enabled = false;
             }
             else {
-                mLadderLastGravity = rigidbody.useGravity;
-                rigidbody.useGravity = false;
+                mLadderLastGravity = GetComponent<Rigidbody>().useGravity;
+                GetComponent<Rigidbody>().useGravity = false;
             }
         }
     }
@@ -163,8 +163,8 @@ public class FPController : RigidBodyController {
                     gravityController.enabled = false;
                 }
                 else {
-                    mLadderLastGravity = rigidbody.useGravity;
-                    rigidbody.useGravity = false;
+                    mLadderLastGravity = GetComponent<Rigidbody>().useGravity;
+                    GetComponent<Rigidbody>().useGravity = false;
                 }
             }
 
@@ -188,7 +188,7 @@ public class FPController : RigidBodyController {
             if(gravityController != null)
                 gravityController.enabled = true;
             else
-                rigidbody.useGravity = mLadderLastGravity;
+                GetComponent<Rigidbody>().useGravity = mLadderLastGravity;
         }
     }
 
@@ -218,7 +218,7 @@ public class FPController : RigidBodyController {
 
     // Update is called once per frame
     protected override void FixedUpdate() {
-        Rigidbody body = rigidbody;
+        Rigidbody body = GetComponent<Rigidbody>();
         Quaternion dirRot = dirHolder.rotation;
 
         if(mInputEnabled) {
@@ -336,7 +336,7 @@ public class FPController : RigidBodyController {
         base.FixedUpdate();
 
         if(isOnLadder)
-            rigidbody.drag = ladderDrag;
+            GetComponent<Rigidbody>().drag = ladderDrag;
     }
 
     void OnInputJump(InputManager.Info dat) {
@@ -365,8 +365,8 @@ public class FPController : RigidBodyController {
 
                     if(jumpImpulse > 0.0f) {
                         ClearCollFlags();
-                        rigidbody.drag = airDrag;
-                        rigidbody.AddForce(jumpDir * jumpImpulse, ForceMode.Impulse);
+                        GetComponent<Rigidbody>().drag = airDrag;
+                        GetComponent<Rigidbody>().AddForce(jumpDir * jumpImpulse, ForceMode.Impulse);
                     }
 
                     mJump = true;
@@ -386,8 +386,8 @@ public class FPController : RigidBodyController {
                     if(isGrounded) {
                         if(jumpImpulse > 0.0f) {
                             ClearCollFlags();
-                            rigidbody.drag = airDrag;
-                            rigidbody.AddForce(dirHolder.up * jumpImpulse, ForceMode.Impulse);
+                            GetComponent<Rigidbody>().drag = airDrag;
+                            GetComponent<Rigidbody>().AddForce(dirHolder.up * jumpImpulse, ForceMode.Impulse);
                         }
 
                         mJump = true;
@@ -418,7 +418,7 @@ public class FPController : RigidBodyController {
         while(isOnLadder) {
             if(transform.up != mLadderUp) {
                 float step = ladderOrientSpeed * Time.fixedDeltaTime;
-                rigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, mLadderRot, step));
+                GetComponent<Rigidbody>().MoveRotation(Quaternion.RotateTowards(transform.rotation, mLadderRot, step));
             }
 
             yield return waitUpdate;

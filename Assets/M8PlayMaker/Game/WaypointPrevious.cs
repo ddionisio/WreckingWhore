@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Waypoint")]
-    [Tooltip("Move waypoint backwards.")]
+    [HutongGames.PlayMaker.Tooltip("Move waypoint backwards.")]
     public class WaypointPrevious : FSMActionComponentBase<WaypointData> {
         public FsmEvent isFirst;
 

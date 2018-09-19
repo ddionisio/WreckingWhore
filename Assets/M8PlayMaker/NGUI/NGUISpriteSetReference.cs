@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate NGUI")]
-    [Tooltip("Set the sprite reference of a given widget.")]
+    [HutongGames.PlayMaker.Tooltip("Set the sprite reference of a given widget.")]
     public class NGUISpriteSetReference : FSMActionComponentBase<UISprite> {
         [RequiredField]
         public FsmString sprite;

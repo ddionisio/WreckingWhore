@@ -86,7 +86,7 @@ public class MatAutoTileScale : MonoBehaviour {
 
     void InitMat() {
         if(_target == null)
-            _target = renderer;
+            _target = GetComponent<Renderer>();
 
         if(_target != null) {
             mMat = _target.material;

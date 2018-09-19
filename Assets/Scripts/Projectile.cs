@@ -85,12 +85,12 @@ public class Projectile : EntityBase {
     protected override void Awake() {
         base.Awake();
 
-        if(rigidbody != null) {
-            rigidbody.detectCollisions = false;
+        if(GetComponent<Rigidbody>() != null) {
+            GetComponent<Rigidbody>().detectCollisions = false;
         }
 
-        if(collider != null)
-            collider.enabled = false;
+        if(GetComponent<Collider>() != null)
+            GetComponent<Collider>().enabled = false;
     }
 
     // Use this for initialization
@@ -117,13 +117,13 @@ public class Projectile : EntityBase {
             }
 
             //starting direction and force
-            if(rigidbody != null && mStartDir != Vector3.zero) {
+            if(GetComponent<Rigidbody>() != null && mStartDir != Vector3.zero) {
                 //set velocity
                 if(startVelocityAddRand != 0.0f) {
-                    rigidbody.velocity = mStartDir * (startVelocity + Random.value * startVelocityAddRand);
+                    GetComponent<Rigidbody>().velocity = mStartDir * (startVelocity + Random.value * startVelocityAddRand);
                 }
                 else {
-                    rigidbody.velocity = mStartDir * startVelocity;
+                    GetComponent<Rigidbody>().velocity = mStartDir * startVelocity;
                 }
 
                 mActiveForce = mStartDir * force;
@@ -156,22 +156,22 @@ public class Projectile : EntityBase {
         switch((State)state) {
             case State.Seek:
             case State.Active:
-                if(collider)
-                    collider.enabled = true;
+                if(GetComponent<Collider>())
+                    GetComponent<Collider>().enabled = true;
 
-                if(rigidbody)
-                    rigidbody.detectCollisions = true;
+                if(GetComponent<Rigidbody>())
+                    GetComponent<Rigidbody>().detectCollisions = true;
                 break;
 
             case State.Dying:
                 CancelInvoke();
 
-                if(collider)
-                    collider.enabled = false;
+                if(GetComponent<Collider>())
+                    GetComponent<Collider>().enabled = false;
 
-                if(rigidbody) {
-                    rigidbody.detectCollisions = false;
-                    rigidbody.velocity = Vector3.zero;
+                if(GetComponent<Rigidbody>()) {
+                    GetComponent<Rigidbody>().detectCollisions = false;
+                    GetComponent<Rigidbody>().velocity = Vector3.zero;
                 }
 
                 if(explodeOnDeath && explodeRadius > 0.0f) {
@@ -183,12 +183,12 @@ public class Projectile : EntityBase {
                 break;
 
             case State.Invalid:
-                if(collider)
-                    collider.enabled = false;
+                if(GetComponent<Collider>())
+                    GetComponent<Collider>().enabled = false;
 
-                if(rigidbody) {
-                    rigidbody.detectCollisions = false;
-                    rigidbody.velocity = Vector3.zero;
+                if(GetComponent<Rigidbody>()) {
+                    GetComponent<Rigidbody>().detectCollisions = false;
+                    GetComponent<Rigidbody>().velocity = Vector3.zero;
                 }
                 break;
         }
@@ -213,13 +213,13 @@ public class Projectile : EntityBase {
                 break;
 
             case ContactType.Stop:
-                if(rigidbody != null)
-                    rigidbody.velocity = Vector3.zero;
+                if(GetComponent<Rigidbody>() != null)
+                    GetComponent<Rigidbody>().velocity = Vector3.zero;
                 break;
 
             case ContactType.Bounce:
-                if(rigidbody != null) {
-                    rigidbody.velocity = Vector3.Reflect(rigidbody.velocity, normal);
+                if(GetComponent<Rigidbody>() != null) {
+                    GetComponent<Rigidbody>().velocity = Vector3.Reflect(GetComponent<Rigidbody>().velocity, normal);
                 }
                 break;
         }
@@ -250,20 +250,20 @@ public class Projectile : EntityBase {
     }
 
     void OnUpUpdate() {
-        if(rigidbody != null && rigidbody.velocity != Vector3.zero) {
-            transform.up = rigidbody.velocity;
+        if(GetComponent<Rigidbody>() != null && GetComponent<Rigidbody>().velocity != Vector3.zero) {
+            transform.up = GetComponent<Rigidbody>().velocity;
         }
     }
 
     void FixedUpdate() {
         switch((State)state) {
             case State.Active:
-                if(rigidbody != null)
-                    rigidbody.AddForce(mActiveForce);
+                if(GetComponent<Rigidbody>() != null)
+                    GetComponent<Rigidbody>().AddForce(mActiveForce);
                 break;
 
             case State.Seek:
-                if(rigidbody != null && mSeek != null) {
+                if(GetComponent<Rigidbody>() != null && mSeek != null) {
                     //steer torwards seek
                     Vector3 pos = transform.position;
                     Vector3 dest = mSeek.position;
@@ -275,11 +275,11 @@ public class Projectile : EntityBase {
 
                         //restrict
                         if(seekAngleCap < 360.0f) {
-                            _dir = M8.MathUtil.DirCap(rigidbody.velocity.normalized, _dir, seekAngleCap);
+                            _dir = M8.MathUtil.DirCap(GetComponent<Rigidbody>().velocity.normalized, _dir, seekAngleCap);
                         }
 
-                        Vector3 force = M8.MathUtil.Steer(rigidbody.velocity, _dir * seekVelocity, seekVelocityCap, 1.0f);
-                        rigidbody.AddForce(force, ForceMode.VelocityChange);
+                        Vector3 force = M8.MathUtil.Steer(GetComponent<Rigidbody>().velocity, _dir * seekVelocity, seekVelocityCap, 1.0f);
+                        GetComponent<Rigidbody>().AddForce(force, ForceMode.VelocityChange);
                     }
                 }
                 break;
@@ -300,9 +300,9 @@ public class Projectile : EntityBase {
         Collider[] cols = Physics.OverlapSphere(pos, explodeRadius, explodeMask.value);
 
         foreach(Collider col in cols) {
-            if(col != null && col.rigidbody != null && CheckTag(col.gameObject.tag)) {
+            if(col != null && col.GetComponent<Rigidbody>() != null && CheckTag(col.gameObject.tag)) {
                 //hurt?
-                col.rigidbody.AddExplosionForce(explodeForce, pos, explodeRadius, 0.0f, ForceMode.Force);
+                col.GetComponent<Rigidbody>().AddExplosionForce(explodeForce, pos, explodeRadius, 0.0f, ForceMode.Force);
 
                 //float distSqr = (col.transform.position - pos).sqrMagnitude;
 

@@ -7,7 +7,7 @@ class CameraMotionBlurEditor extends Editor
 	var serObj : SerializedObject;	
 		
   var filterType : SerializedProperty;
-  var preview : SerializedProperty;
+  var _preview : SerializedProperty;
   var previewScale : SerializedProperty;
   var movementScale : SerializedProperty;
   var jitter : SerializedProperty;
@@ -28,7 +28,7 @@ class CameraMotionBlurEditor extends Editor
 		
     filterType = serObj.FindProperty ("filterType");
 
-    preview = serObj.FindProperty ("preview");
+    _preview = serObj.FindProperty ("preview");
     previewScale = serObj.FindProperty ("previewScale");
 
     movementScale = serObj.FindProperty ("movementScale");
@@ -89,8 +89,8 @@ class CameraMotionBlurEditor extends Editor
 
     EditorGUILayout.Separator ();
 
-    EditorGUILayout.PropertyField (preview, new GUIContent("Preview"));
-    if (preview.boolValue)
+    EditorGUILayout.PropertyField (_preview, new GUIContent("Preview"));
+    if (_preview.boolValue)
       EditorGUILayout.PropertyField (previewScale, new GUIContent(""));    
         	
     serObj.ApplyModifiedProperties();

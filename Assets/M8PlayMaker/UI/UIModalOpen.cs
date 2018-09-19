@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate UI")]
-    [Tooltip("Open a UI Modal")]
+    [HutongGames.PlayMaker.Tooltip("Open a UI Modal")]
     public class UIModalOpen : FsmStateAction {
         public FsmString modal;
 

@@ -3,15 +3,15 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate tk2D")]
-    [Tooltip("Pause the sprite animator.")]
+    [HutongGames.PlayMaker.Tooltip("Pause the sprite animator.")]
     public class SpriteAnimator3DPause : FSMActionComponentBase<SpriteAnimator3D> {
 
-        [Tooltip("Pause flag")]
+        [HutongGames.PlayMaker.Tooltip("Pause flag")]
         public FsmBool pause;
 
         [ActionSection("")]
 
-        [Tooltip("Repeat every frame.")]
+        [HutongGames.PlayMaker.Tooltip("Repeat every frame.")]
         public bool everyframe;
 
         public override void Reset() {

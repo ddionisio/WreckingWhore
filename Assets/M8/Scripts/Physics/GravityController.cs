@@ -53,12 +53,12 @@ public class GravityController : MonoBehaviour {
         }
 
         if(mGravityField) {
-            mGravityField.RemoveItem(collider, false);
+            mGravityField.RemoveItem(GetComponent<Collider>(), false);
         }
     }
     
     protected virtual void Awake() {
-        rigidbody.useGravity = false;
+        GetComponent<Rigidbody>().useGravity = false;
     }
 
     // Use this for initialization
@@ -70,7 +70,7 @@ public class GravityController : MonoBehaviour {
     // Update is called once per frame
     protected virtual void FixedUpdate() {
         if(!mGravityLocked)
-            rigidbody.AddForce(mUp * gravity, ForceMode.Acceleration);
+            GetComponent<Rigidbody>().AddForce(mUp * gravity, ForceMode.Acceleration);
     }
 
     protected virtual void ApplyUp() {
@@ -100,7 +100,7 @@ public class GravityController : MonoBehaviour {
 
         while(transform.up != mUp) {
             float step = orientationSpeed * Time.fixedDeltaTime;
-            rigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, mRotateTo, step));
+            GetComponent<Rigidbody>().MoveRotation(Quaternion.RotateTowards(transform.rotation, mRotateTo, step));
 
             yield return mWaitUpdate;
         }

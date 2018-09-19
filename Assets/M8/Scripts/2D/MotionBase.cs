@@ -42,8 +42,8 @@ public class MotionBase : MonoBehaviour {
 			mBody.velocity = Vector3.zero;
 		}
 		
-		if(collider != null) {
-			collider.enabled = true;
+		if(GetComponent<Collider>() != null) {
+			GetComponent<Collider>().enabled = true;
 		}
 		
 		mMaxSpeed = maxSpeed;
@@ -51,7 +51,7 @@ public class MotionBase : MonoBehaviour {
 	}
 	
 	protected virtual void Awake() {
-		mBody = rigidbody;
+		mBody = GetComponent<Rigidbody>();
 		mMaxSpeed = maxSpeed;
 	}
 	

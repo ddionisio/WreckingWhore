@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Pool")]
-    [Tooltip("Release given game object. If group is None, PoolController will determine what group this game object belongs to.")]
+    [HutongGames.PlayMaker.Tooltip("Release given game object. If group is None, PoolController will determine what group this game object belongs to.")]
     public class PoolRelease : FsmStateAction {
         public FsmString group;
 

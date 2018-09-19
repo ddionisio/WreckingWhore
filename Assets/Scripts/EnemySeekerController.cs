@@ -38,7 +38,7 @@ public class EnemySeekerController : MonoBehaviour {
                 break;
 
             case EntityState.Dead:
-                rigidbody.velocity = Vector3.zero;
+                GetComponent<Rigidbody>().velocity = Vector3.zero;
                 break;
         }
     }
@@ -123,11 +123,11 @@ public class EnemySeekerController : MonoBehaviour {
 
     void DoSteer(float _accel, float _spdCap) {
         //Debug.Log("spd: " + rigidbody.velocity.magnitude);
-        rigidbody.AddForce(mSteerToDir * _accel, ForceMode.Acceleration);
+        GetComponent<Rigidbody>().AddForce(mSteerToDir * _accel, ForceMode.Acceleration);
 
-        float sqrMag = rigidbody.velocity.sqrMagnitude;
+        float sqrMag = GetComponent<Rigidbody>().velocity.sqrMagnitude;
         if(sqrMag > _spdCap * _spdCap)
-            rigidbody.velocity = (rigidbody.velocity / Mathf.Sqrt(sqrMag)) * _spdCap;
+            GetComponent<Rigidbody>().velocity = (GetComponent<Rigidbody>().velocity / Mathf.Sqrt(sqrMag)) * _spdCap;
             //rigidbody.AddForce(mSteerToDir * _accel, ForceMode.Acceleration);
     }
 

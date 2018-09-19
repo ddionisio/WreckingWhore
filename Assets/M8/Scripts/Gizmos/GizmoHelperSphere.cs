@@ -13,7 +13,7 @@ public class GizmoHelperSphere : MonoBehaviour {
         Vector3 ofs = offset;
 
         if(useCollider) {
-            SphereCollider sc = collider != null ? collider as SphereCollider : null;
+            SphereCollider sc = GetComponent<Collider>() != null ? GetComponent<Collider>() as SphereCollider : null;
             if(sc != null) {
                 radius = sc.radius;
                 ofs += sc.center;

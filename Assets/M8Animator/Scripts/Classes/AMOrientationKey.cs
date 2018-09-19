@@ -44,6 +44,10 @@ public class AMPlugOrientation : ABSTweenPlugin {
     protected override void SetChangeVal() {
     }
 
+    protected override void SetIncrementalRestart() {
+        
+    }
+
     protected override void SetIncremental(int p_diffIncr) {
     }
 

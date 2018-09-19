@@ -11,7 +11,7 @@ namespace M8.PlayMaker {
 
         public FsmBool wait;
 
-        [Tooltip("The event to call after music ends. Make sure to set wait = true. If this is set, this action will wait until music has finished. Make sure the given music is not set to loop!")]
+        [HutongGames.PlayMaker.Tooltip("The event to call after music ends. Make sure to set wait = true. If this is set, this action will wait until music has finished. Make sure the given music is not set to loop!")]
         public FsmEvent onFinishEvent;
 
         public override void Reset() {

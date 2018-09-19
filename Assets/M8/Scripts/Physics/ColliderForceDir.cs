@@ -34,7 +34,7 @@ public class ColliderForceDir : MonoBehaviour {
         dir = transform.rotation * (inverse ? -dir : dir);
 
         foreach(ContactPoint contact in col.contacts) {
-            Rigidbody body = contact.otherCollider.rigidbody;
+            Rigidbody body = contact.otherCollider.GetComponent<Rigidbody>();
 
             if(body != null && !body.isKinematic) {
                 if(atPoint)

@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Entity")]
-    [Tooltip("Set entity state.")]
+    [HutongGames.PlayMaker.Tooltip("Set entity state.")]
     public class EntitySetState : FSMActionComponentBase<EntityBase> {
         [RequiredField]
         public FsmInt state;

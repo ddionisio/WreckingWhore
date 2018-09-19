@@ -48,9 +48,9 @@ public class SoundPlayerGlobal : MonoBehaviour {
         if(mSfx.TryGetValue(name, out dat)) {
             ret = GetAvailable();
             if(ret != null) {
-                ret.audio.clip = dat.clip;
-                ret.audio.volume = dat.volume;
-                ret.audio.loop = dat.loop;
+                ret.GetComponent<AudioSource>().clip = dat.clip;
+                ret.GetComponent<AudioSource>().volume = dat.volume;
+                ret.GetComponent<AudioSource>().loop = dat.loop;
 
                 SoundPlayer sp = ret.GetComponent<SoundPlayer>();
                 sp.playOnActive = false;

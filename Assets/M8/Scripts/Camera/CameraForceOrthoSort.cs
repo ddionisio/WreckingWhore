@@ -6,17 +6,17 @@ using System.Collections;
 public class CameraForceOrthoSort : MonoBehaviour {
 
     void OnEnable() {
-        camera.transparencySortMode = TransparencySortMode.Orthographic;
+        GetComponent<Camera>().transparencySortMode = TransparencySortMode.Orthographic;
     }
 
     void OnPreCull() {
-        camera.transparencySortMode = TransparencySortMode.Orthographic;
+        GetComponent<Camera>().transparencySortMode = TransparencySortMode.Orthographic;
     }
 
 #if UNITY_EDITOR
     void LateUpdate() {
         if(!Application.isPlaying) {
-            camera.transparencySortMode = TransparencySortMode.Orthographic;
+            GetComponent<Camera>().transparencySortMode = TransparencySortMode.Orthographic;
         }
     }
 #endif

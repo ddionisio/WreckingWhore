@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Waypoint")]
-    [Tooltip("Get a waypoint from WaypointData and put it in a Vector/GameObject")]
+    [HutongGames.PlayMaker.Tooltip("Get a waypoint from WaypointData and put it in a Vector/GameObject")]
     public class WaypointGetCurrent : FSMActionComponentBase<WaypointData> {
         [UIHint(UIHint.Variable)]
         public FsmVector3 toVector;

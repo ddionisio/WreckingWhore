@@ -1174,7 +1174,7 @@ public class AMTake : MonoBehaviour {
         foreach(AMTrack track in trackValues) {
             if(!(track is AMAnimationTrack)) continue;
             if((track as AMAnimationTrack).obj) {
-                (track as AMAnimationTrack).obj.animation.Stop();
+                (track as AMAnimationTrack).obj.GetComponent<Animation>().Stop();
             }
         }
     }

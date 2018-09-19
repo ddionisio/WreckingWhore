@@ -133,7 +133,7 @@ public class PlatformerController : RigidBodyController {
             if(gravityController != null)
                 gravityController.enabled = true;
             else
-                rigidbody.useGravity = mLadderLastGravity;
+                GetComponent<Rigidbody>().useGravity = mLadderLastGravity;
 
             mLadderCounter = 0;
         }
@@ -220,8 +220,8 @@ public class PlatformerController : RigidBodyController {
                 gravityController.enabled = false;
             }
             else {
-                mLadderLastGravity = rigidbody.useGravity;
-                rigidbody.useGravity = false;
+                mLadderLastGravity = GetComponent<Rigidbody>().useGravity;
+                GetComponent<Rigidbody>().useGravity = false;
             }
 
             mJumpingWall = false;
@@ -241,8 +241,8 @@ public class PlatformerController : RigidBodyController {
                     gravityController.enabled = false;
                 }
                 else {
-                    mLadderLastGravity = rigidbody.useGravity;
-                    rigidbody.useGravity = false;
+                    mLadderLastGravity = GetComponent<Rigidbody>().useGravity;
+                    GetComponent<Rigidbody>().useGravity = false;
                 }
             }
 
@@ -270,7 +270,7 @@ public class PlatformerController : RigidBodyController {
             if(gravityController != null)
                 gravityController.enabled = true;
             else
-                rigidbody.useGravity = mLadderLastGravity;
+                GetComponent<Rigidbody>().useGravity = mLadderLastGravity;
         }
     }
 
@@ -285,7 +285,7 @@ public class PlatformerController : RigidBodyController {
 
         //see if we are trying to move the opposite dir
         if(!ret) { //see if we are trying to move the opposite dir
-            Vector3 velDir = rigidbody.velocity.normalized;
+            Vector3 velDir = GetComponent<Rigidbody>().velocity.normalized;
             ret = Vector3.Dot(dir, velDir) < moveCosCheck;
         }
 
@@ -353,7 +353,7 @@ public class PlatformerController : RigidBodyController {
                     if(newVel.y < -wallStickDownSpeedCap)
                         newVel.y = -wallStickDownSpeedCap;
 
-                    rigidbody.velocity = dirHolder.rotation * newVel;
+                    GetComponent<Rigidbody>().velocity = dirHolder.rotation * newVel;
                 }
             }
         }
@@ -407,7 +407,7 @@ public class PlatformerController : RigidBodyController {
 
     // Update is called once per frame
     protected override void FixedUpdate() {
-        Rigidbody body = rigidbody;
+        Rigidbody body = GetComponent<Rigidbody>();
         Quaternion dirRot = dirHolder.rotation;
 
         if(mInputEnabled) {
@@ -505,7 +505,7 @@ public class PlatformerController : RigidBodyController {
         UpdateCamera(Time.fixedDeltaTime);
 
         if(isOnLadder)
-            rigidbody.drag = ladderDrag;
+            GetComponent<Rigidbody>().drag = ladderDrag;
     }
 
     /*IEnumerator DoWallStick() {
@@ -532,7 +532,7 @@ public class PlatformerController : RigidBodyController {
             newVel.y = 0.0f; //cancel 'falling down'
 
         newVel = dirHolder.rotation * newVel;
-        rigidbody.velocity = newVel;
+        GetComponent<Rigidbody>().velocity = newVel;
     }
 
     void OnInputJump(InputManager.Info dat) {
@@ -548,15 +548,15 @@ public class PlatformerController : RigidBodyController {
             }
             else if(canWallJump) {
 
-                rigidbody.velocity = Vector3.zero;
+                GetComponent<Rigidbody>().velocity = Vector3.zero;
                 lockDrag = true;
-                rigidbody.drag = airDrag;
+                GetComponent<Rigidbody>().drag = airDrag;
 
                 Vector3 impulse = mWallStickCollInfo.normal * jumpWallImpulse;
                 impulse += dirHolder.up * jumpWallUpImpulse;
 
                 PrepJumpVel();
-                rigidbody.AddForce(impulse, ForceMode.Impulse);
+                GetComponent<Rigidbody>().AddForce(impulse, ForceMode.Impulse);
 
                 mJumpingWall = true;
                 mJump = true;
@@ -574,12 +574,12 @@ public class PlatformerController : RigidBodyController {
             else if(!isSlopSlide) {
                 if(mJumpCounter < jumpCounter && (mJumpCounter > 0 || isGrounded)) {
                     lockDrag = true;
-                    rigidbody.drag = airDrag;
+                    GetComponent<Rigidbody>().drag = airDrag;
 
                     PrepJumpVel();
 
                     if(!isGrounded)
-                        rigidbody.AddForce(dirHolder.up * jumpAirImpulse, ForceMode.Impulse);
+                        GetComponent<Rigidbody>().AddForce(dirHolder.up * jumpAirImpulse, ForceMode.Impulse);
 
                     mJumpCounter++;
                     mJumpingWall = false;
@@ -602,7 +602,7 @@ public class PlatformerController : RigidBodyController {
         while(isOnLadder) {
             if(transform.up != mLadderUp) {
                 float step = ladderOrientSpeed * Time.fixedDeltaTime;
-                rigidbody.MoveRotation(Quaternion.RotateTowards(transform.rotation, mLadderRot, step));
+                GetComponent<Rigidbody>().MoveRotation(Quaternion.RotateTowards(transform.rotation, mLadderRot, step));
             }
 
             yield return waitUpdate;

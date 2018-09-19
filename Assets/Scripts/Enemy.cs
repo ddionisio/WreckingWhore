@@ -46,8 +46,8 @@ public class Enemy : EntityBase {
         if(bodyCollider) {
             bodyCollider.enabled = yes;
 
-            if(bodyCollider.rigidbody)
-                bodyCollider.rigidbody.detectCollisions = yes;
+            if(bodyCollider.GetComponent<Rigidbody>())
+                bodyCollider.GetComponent<Rigidbody>().detectCollisions = yes;
         }
     }
 
@@ -323,11 +323,11 @@ public class Enemy : EntityBase {
             case EntityState.Attack:
                 mStats.Damage(hit.damage);
 
-                if(allowKnockback && hit.knockback && bodyCollider && !bodyCollider.rigidbody.isKinematic) {
-                    Vector3 hitPos = hit.collider ? hit.collider.bounds.center : hit.transform.position;
+                if(allowKnockback && hit.knockback && bodyCollider && !bodyCollider.GetComponent<Rigidbody>().isKinematic) {
+                    Vector3 hitPos = hit.GetComponent<Collider>() ? hit.GetComponent<Collider>().bounds.center : hit.transform.position;
                     Vector3 delta = new Vector3(Mathf.Sign(bodyCollider.bounds.center.x - hitPos.x), 0);
                     delta = Quaternion.AngleAxis(delta.x < 0 ? -knockbackAngle : knockbackAngle, Vector3.forward) * delta;
-                    bodyCollider.rigidbody.AddForce(delta * knockbackImpulse, ForceMode.Impulse);
+                    bodyCollider.GetComponent<Rigidbody>().AddForce(delta * knockbackImpulse, ForceMode.Impulse);
                 }
                 break;
         }

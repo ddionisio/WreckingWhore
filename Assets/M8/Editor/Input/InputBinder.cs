@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using System.Text;
+using SimpleJSON;
 
 namespace M8.Editor {
     public class InputBinder : EditorWindow {
@@ -210,8 +211,40 @@ namespace M8.Editor {
                 //load from file
                 if(refreshBinds && mTextFile.text.Length > 0) {
                     //load data
-                    fastJSON.JSON.Instance.Parameters.UseExtensions = false;
-                    List<InputManager.Bind> loadBinds = fastJSON.JSON.Instance.ToObject<List<InputManager.Bind>>(mTextFile.text);
+                    //
+                    var loadBinds = new List<InputManager.Bind>();
+                    var json = JSON.Parse(mTextFile.text).AsArray;
+                    foreach(var node in json) {
+                        var entryNode = node.Value;
+
+                        int action = entryNode["action"].AsInt;
+                        InputManager.Control control = (InputManager.Control)System.Enum.Parse(typeof(InputManager.Control), entryNode["control"].ToString());
+                        bool axisInvert = entryNode["axisInvert"].AsBool;
+                        float deadZone = entryNode["deadZone"].AsFloat;
+                        bool forceRaw = entryNode["forceRaw"].AsBool;
+
+                        List<InputManager.Key> inpkeys;
+
+                        if(entryNode["keys"] != null) {
+                            var keyArrayNode = entryNode["keys"].AsArray;
+                            inpkeys = new List<InputManager.Key>(keyArrayNode.Count);
+                            for(int i = 0; i < keyArrayNode.Count; i++) {
+                                int player = keyArrayNode[i]["player"].AsInt;
+                                string input = keyArrayNode[i]["input"].ToString();
+                                KeyCode code = (KeyCode)System.Enum.Parse(typeof(KeyCode), keyArrayNode[i]["code"].ToString());
+                                InputKeyMap map = (InputKeyMap)System.Enum.Parse(typeof(InputKeyMap), keyArrayNode[i]["map"].ToString());
+                                InputManager.ButtonAxis axis = (InputManager.ButtonAxis)System.Enum.Parse(typeof(InputManager.ButtonAxis), keyArrayNode[i]["axis"].ToString());
+                                int index = keyArrayNode[i]["index"].AsInt;
+
+                                inpkeys.Add(new InputManager.Key() { player = player, input = input, code = code, map = map, axis = axis, index = index });
+                            }
+                        }
+                        else
+                            inpkeys = new List<InputManager.Key>();
+
+                        loadBinds.Add(new InputManager.Bind() { action = action, control = control, deadZone = deadZone, keys = inpkeys });
+                    }
+                    //
                     foreach(InputManager.Bind bind in loadBinds) {
                         if(bind.action < mBinds.Length) {
                             mBinds[bind.action].bind = bind;
@@ -311,8 +344,6 @@ namespace M8.Editor {
                 GUILayout.EndScrollView();
 
                 if(GUILayout.Button("Save")) {
-                    fastJSON.JSON.Instance.Parameters.UseExtensions = false;
-                    
                     List<InputManager.Bind> saveBinds = new List<InputManager.Bind>(mBinds.Length);
 
                     for(int i = 0; i < mBinds.Length; i++) {
@@ -321,7 +352,38 @@ namespace M8.Editor {
                         saveBinds.Add(mBinds[i].bind);
                     }
 
-                    string output = fastJSON.JSON.Instance.ToJSON(saveBinds);
+                    var outputJSON = new JSONArray();
+                    foreach(var bind in saveBinds) {
+                        var bindJSON = new JSONObject();
+
+                        bindJSON["action"] = bind.action;
+                        bindJSON["control"] = bind.control.ToString();
+                        //bindJSON["axisInvert"] = bind.axisInvert;
+                        bindJSON["deadZone"] = bind.deadZone;
+                        //bindJSON["forceRaw"] = bind.forceRaw;
+
+                        var bindKeysJSON = new JSONArray();
+                        if(bind.keys != null) {
+                            foreach(var key in bind.keys) {
+                                var bindKeyJSON = new JSONObject();
+
+                                bindKeyJSON["player"] = key.player;
+                                bindKeyJSON["input"] = key.input;
+                                bindKeyJSON["code"] = key.code.ToString();
+                                bindKeyJSON["map"] = key.map.ToString();
+                                bindKeyJSON["axis"] = key.axis.ToString();
+                                bindKeyJSON["index"] = key.index;
+
+                                bindKeysJSON.Add(bindKeyJSON);
+                            }
+                        }
+
+                        bindJSON["keys"] = bindKeysJSON;
+
+                        outputJSON.Add(bindJSON);
+                    }
+
+                    string output = outputJSON.ToString();
 
                     File.WriteAllText(mTextFilePath, output);
 

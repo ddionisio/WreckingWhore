@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Waypoint")]
-    [Tooltip("Get a waypoint from the waypoint manager and set the WaypointData. Do this sparingly, ie. on start or cache the ones you need.")]
+    [HutongGames.PlayMaker.Tooltip("Get a waypoint from the waypoint manager and set the WaypointData. Do this sparingly, ie. on start or cache the ones you need.")]
     public class WaypointGetByName : FSMActionComponentBase<WaypointData> {
         [RequiredField]
         public FsmString waypoint;

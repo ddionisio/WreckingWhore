@@ -20,12 +20,13 @@ class PlayMakerGUIInspector : Editor
 
 	public override void OnInspectorGUI()
 	{
-		EditorGUIUtility.LookLikeInspector();
-
+#if UNITY_4_3
+	    EditorGUIUtility.labelWidth = 210;
+#else
+        EditorGUIUtility.LookLikeInspector();
+#endif
 		GUILayout.Label(Strings.Label_NOTES, EditorStyles.boldLabel);
-		
 		GUILayout.Label(Strings.Hint_PlayMakerGUI_Notes);
-		
 		GUILayout.Label(Strings.Label_General, EditorStyles.boldLabel);
 
 		EditorGUI.indentLevel = 1;
@@ -50,7 +51,6 @@ class PlayMakerGUIInspector : Editor
 			guiComponent.drawStateLabels = drawStateLabels;
 			EditorPrefs.SetBool(EditorPrefStrings.ShowStateLabelsInGameView, drawStateLabels);
 		}
-
 
 		GUI.enabled = guiComponent.drawStateLabels;
 		//EditorGUI.indentLevel = 2;

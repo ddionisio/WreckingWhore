@@ -3,17 +3,17 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate tk2D")]
-    [Tooltip("Play a clip and wait for specific event.")]
+    [HutongGames.PlayMaker.Tooltip("Play a clip and wait for specific event.")]
     public class SpriteAnimator3DPlayWithEvents : FSMActionComponentBase<SpriteAnimator3D> {
 
         [RequiredField]
-        [Tooltip("The clip name to play")]
+        [HutongGames.PlayMaker.Tooltip("The clip name to play")]
         public FsmString clipName;
 
-        [Tooltip("Trigger event defined in the clip. The event holds the following triggers infos: the eventInt, eventInfo and eventFloat properties")]
+        [HutongGames.PlayMaker.Tooltip("Trigger event defined in the clip. The event holds the following triggers infos: the eventInt, eventInfo and eventFloat properties")]
         public FsmEvent animationTriggerEvent;
 
-        [Tooltip("Animation complete event. The event holds the clipId reference")]
+        [HutongGames.PlayMaker.Tooltip("Animation complete event. The event holds the clipId reference")]
         public FsmEvent animationCompleteEvent;
 
         public override void Reset() {

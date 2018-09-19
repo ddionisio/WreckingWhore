@@ -23,12 +23,12 @@ public class SoundPlayer : MonoBehaviour {
 
     public virtual void Play() {
         UserSettings us = Main.instance.userSettings;
-        audio.volume = mDefaultVolume * us.soundVolume;
+        GetComponent<AudioSource>().volume = mDefaultVolume * us.soundVolume;
 
         if(playDelay > 0.0f)
-            audio.PlayDelayed(refRate * playDelay);
+            GetComponent<AudioSource>().PlayDelayed(refRate * playDelay);
         else
-            audio.Play();
+            GetComponent<AudioSource>().Play();
     }
 
     protected virtual void OnEnable() {
@@ -37,9 +37,9 @@ public class SoundPlayer : MonoBehaviour {
     }
 
     protected virtual void Awake() {
-        audio.playOnAwake = false;
+        GetComponent<AudioSource>().playOnAwake = false;
 
-        mDefaultVolume = audio.volume;
+        mDefaultVolume = GetComponent<AudioSource>().volume;
     }
 
     // Use this for initialization
@@ -52,6 +52,6 @@ public class SoundPlayer : MonoBehaviour {
 
     void UserSettingsChanged(UserSettings us) {
         //if(audio.isPlaying)
-        audio.volume = mDefaultVolume * us.soundVolume;    
+        GetComponent<AudioSource>().volume = mDefaultVolume * us.soundVolume;    
     }
 }

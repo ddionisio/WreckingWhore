@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -38,7 +38,7 @@ public class BMSymbol
 	/// Mark this symbol as dirty, clearing the sprite reference.
 	/// </summary>
 
-	public void MarkAsDirty () { mIsValid = false; }
+	public void MarkAsChanged () { mIsValid = false; }
 
 	/// <summary>
 	/// Validate this symbol, given the specified atlas.

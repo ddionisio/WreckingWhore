@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Scene")]
-    [Tooltip("This is for use with SceneSerializer. Set the value to variable as either float or integer.  Only one or the other, not both!")]
+    [HutongGames.PlayMaker.Tooltip("This is for use with SceneSerializer. Set the value to variable as either float or integer.  Only one or the other, not both!")]
     public class SceneObjectValueSet : FSMActionComponentBase<SceneSerializer> {
         [RequiredField]
         public FsmString name;

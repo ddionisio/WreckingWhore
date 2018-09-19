@@ -219,6 +219,13 @@ public class AMPlugQuaternionSlerp : ABSTweenPlugin {
     protected override void SetChangeVal() {
     }
 
+    protected override void SetIncrementalRestart() {
+        Quaternion prevStartVal = typedStartVal;
+        startVal = GetValue();
+        Quaternion diff = prevStartVal * Quaternion.Inverse(typedStartVal);
+        typedEndVal = typedStartVal * diff;
+    }
+
     /// <summary>
     /// Sets the correct values in case of Incremental loop type.
     /// </summary>
@@ -226,8 +233,8 @@ public class AMPlugQuaternionSlerp : ABSTweenPlugin {
     /// The difference from the previous loop increment.
     /// </param>
     protected override void SetIncremental(int p_diffIncr) {
-        //???
-        typedStartVal = Quaternion.RotateTowards(typedStartVal, typedEndVal, (float)p_diffIncr);
+        for(int i = 0; i < p_diffIncr; i++)
+            typedStartVal *= changeVal;
     }
 
     /// <summary>

@@ -121,6 +121,7 @@ public class tk2dTextMesh : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBui
 
 	void FormatText(ref string _targetString, string _source)
 	{
+		InitInstance();
 		if (formatting == false || wordWrapWidth == 0 || _fontInst.texelSize == Vector2.zero)
 		{
 			_targetString = _source;
@@ -344,12 +345,47 @@ public class tk2dTextMesh : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBui
 	/// It is similar to offsetting in z - the sprite stays at the original position
 	/// This corresponds to the renderer.sortingOrder property in Unity 4.3
 	/// </summary>
-	public int SortingOrder { get { return data.renderLayer; } set { if (data.renderLayer != value) { data.renderLayer = value; SetNeedUpdate(UpdateFlags.UpdateText); } } }
+	public int SortingOrder { 
+		get { 
+#if (UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+			return data.renderLayer; 
+#else
+			return CachedRenderer.sortingOrder;
+#endif
+		}
+		set { 
+#if (UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2)
+			if (data.renderLayer != value) { 
+				data.renderLayer = value; SetNeedUpdate(UpdateFlags.UpdateText);
+			} 
+#else
+			if (CachedRenderer.sortingOrder != value) {
+				data.renderLayer = value; // for awake
+				CachedRenderer.sortingOrder = value;
+#if UNITY_EDITOR
+				UnityEditor.EditorUtility.SetDirty(CachedRenderer);
+#endif
+			}
+#endif
+		} 
+	}
 
 	void InitInstance()
 	{
-		if (_fontInst == null && data.font != null)
+		if (data != null && data.font != null) {
 			_fontInst = data.font.inst;
+			_fontInst.InitDictionary();
+		}
+	}
+
+	Renderer _cachedRenderer = null;
+	Renderer CachedRenderer {
+		get {
+			if (_cachedRenderer == null) {
+				_cachedRenderer = GetComponent<Renderer>();
+			}
+			return _cachedRenderer;
+		}
 	}
 
 	// Use this for initialization
@@ -372,6 +408,14 @@ public class tk2dTextMesh : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBui
 		// Sensibly reset, so tk2dUpdateManager can deal with this properly
 		updateFlags = UpdateFlags.UpdateNone;
 	}
+
+#if UNITY_EDITOR
+	private void OnEnable() {
+		if (GetComponent<Renderer>() != null && data != null && data.font != null && data.font.inst != null && GetComponent<Renderer>().sharedMaterial == null && data.font.inst.needMaterialInstance) {
+			ForceBuild();
+		}
+	}
+#endif
 
 	protected void OnDestroy()
 	{
@@ -426,6 +470,7 @@ public class tk2dTextMesh : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBui
 			if (_fontInst.useDictionary)
 			{
 				if (!_fontInst.charDict.ContainsKey(idx)) idx = 0;
+
 			}
 			else
 			{
@@ -456,7 +501,7 @@ public class tk2dTextMesh : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBui
 		return numChars;
 	}
 
-	[System.Obsolete]
+	[System.Obsolete("Use GetEstimatedMeshBoundsForString().size instead")]
 	public Vector2 GetMeshDimensionsForString(string str) {
 		return tk2dTextGeomGen.GetMeshDimensionsForString(str, tk2dTextGeomGen.Data( data, _fontInst, _formattedText ));
 	}
@@ -467,6 +512,7 @@ public class tk2dTextMesh : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBui
 	/// This expects an unformatted string and will wrap the string if required.
 	/// </summary>
 	public Bounds GetEstimatedMeshBoundsForString( string str ) {
+		InitInstance();
 		tk2dTextGeomGen.GeomData geomData = tk2dTextGeomGen.Data( data, _fontInst, _formattedText );
 		Vector2 dims = tk2dTextGeomGen.GetMeshDimensionsForString( FormatText( str ), geomData);
 		float offsetY = tk2dTextGeomGen.GetYAnchorForHeight(dims.y, geomData);
@@ -669,7 +715,7 @@ public class tk2dTextMesh : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBui
 		}
 		else if (Camera.main)
 		{
-			if (Camera.main.isOrthoGraphic)
+			if (Camera.main.orthographic)
 			{
 				s = Camera.main.orthographicSize;
 			}
@@ -695,8 +741,8 @@ public class tk2dTextMesh : MonoBehaviour, tk2dRuntime.ISpriteCollectionForceBui
 	
 	void UpdateMaterial()
 	{
-		if (renderer.sharedMaterial != _fontInst.materialInst)
-			renderer.material = _fontInst.materialInst;
+		if (GetComponent<Renderer>().sharedMaterial != _fontInst.materialInst)
+			GetComponent<Renderer>().material = _fontInst.materialInst;
 	}
 	
 	public void ForceBuild()

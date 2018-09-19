@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Waypoint")]
-    [Tooltip("Check if waypoint is done. Use this after WaypointNext")]
+    [HutongGames.PlayMaker.Tooltip("Check if waypoint is done. Use this after WaypointNext")]
     public class WaypointIsComplete : FSMActionComponentBase<WaypointData> {
         [UIHint(UIHint.Variable)]
         public FsmBool result;

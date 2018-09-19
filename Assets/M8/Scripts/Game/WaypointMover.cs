@@ -182,7 +182,7 @@ public class WaypointMover : MonoBehaviour {
         if(target == null)
             target = transform;
 
-        mTargetBody = target.rigidbody;
+        mTargetBody = target.GetComponent<Rigidbody>();
 
         mWaitUpdate = new WaitForFixedUpdate();
         mWaitStartDelay = new WaitForSeconds(startWait);
@@ -358,8 +358,8 @@ public class WaypointMover : MonoBehaviour {
             mCurVel = dpos / Time.fixedDeltaTime;
         }
 
-        if(target.collider != null)
-            pos -= target.worldToLocalMatrix.MultiplyPoint(collider.bounds.center);
+        if(target.GetComponent<Collider>() != null)
+            pos -= target.worldToLocalMatrix.MultiplyPoint(GetComponent<Collider>().bounds.center);
 
         if(mTargetBody != null)
             mTargetBody.MovePosition(pos);

@@ -19,7 +19,7 @@ public class tk2dSpriteMaterialOverride : tk2dSprite {
 #endif
             }
 
-            renderer.material = mMaterialInst;
+            GetComponent<Renderer>().material = mMaterialInst;
         }
     }
 }

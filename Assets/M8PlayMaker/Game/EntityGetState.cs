@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Entity")]
-    [Tooltip("Get entity's current state.")]
+    [HutongGames.PlayMaker.Tooltip("Get entity's current state.")]
     public class EntityGetState : FSMActionComponentBase<EntityBase> {
         [RequiredField]
         [UIHint(UIHint.Variable)]

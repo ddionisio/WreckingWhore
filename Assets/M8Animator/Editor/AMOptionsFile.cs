@@ -144,7 +144,7 @@ public class AMOptionsFile : ScriptableObject {
     public const string filePath = "Assets/-am_options.asset";
 	
 	public static AMOptionsFile loadFile() {
-        AMOptionsFile load_file = (AMOptionsFile)Resources.LoadAssetAtPath(filePath, typeof(AMOptionsFile));
+        AMOptionsFile load_file = (AMOptionsFile)AssetDatabase.LoadAssetAtPath(filePath, typeof(AMOptionsFile));
 		if(load_file) {
 			load_file.unflatten_quickAdd_Combos(true);
 			return load_file;

@@ -168,7 +168,7 @@ public class Player : EntityBase {
     }
 
     void OnHit(HitTrigger hit) {
-        mLastHitPosition = hit.collider ? hit.collider.bounds.center : hit.transform.position;
+        mLastHitPosition = hit.GetComponent<Collider>() ? hit.GetComponent<Collider>().bounds.center : hit.transform.position;
 
         //check invul
         if((state == (int)EntityState.Normal || state == (int)EntityState.Attack) && !isInvulnerable) {
@@ -178,7 +178,7 @@ public class Player : EntityBase {
     }
 
     void OnProjectileHit(Projectile proj) {
-        mLastHitPosition = proj.collider ? proj.collider.bounds.center : proj.transform.position;
+        mLastHitPosition = proj.GetComponent<Collider>() ? proj.GetComponent<Collider>().bounds.center : proj.transform.position;
 
         //check invul
         if((state == (int)EntityState.Normal || state == (int)EntityState.Attack) && !isInvulnerable) {

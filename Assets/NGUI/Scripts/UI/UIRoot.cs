@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -32,7 +32,7 @@ public class UIRoot : MonoBehaviour
 	/// Type of scaling used by the UIRoot.
 	/// </summary>
 
-	public Scaling scalingStyle = Scaling.FixedSize;
+	public Scaling scalingStyle = Scaling.PixelPerfect;
 
 	/// <summary>
 	/// Height of the screen when the scaling style is set to FixedSize.
@@ -65,7 +65,7 @@ public class UIRoot : MonoBehaviour
 			int height = Mathf.Max(2, Screen.height);
 			if (scalingStyle == Scaling.FixedSize) return manualHeight;
 
-#if UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
 			if (scalingStyle == Scaling.FixedSizeOnMobiles)
 				return manualHeight;
 #endif
@@ -133,6 +133,10 @@ public class UIRoot : MonoBehaviour
 
 	void Update ()
 	{
+#if UNITY_EDITOR
+		if (!Application.isPlaying && gameObject.layer != 0)
+			UnityEditor.EditorPrefs.SetInt("NGUI Layer", gameObject.layer);
+#endif
 		if (mTrans != null)
 		{
 			float calcActiveHeight = activeHeight;
@@ -159,10 +163,15 @@ public class UIRoot : MonoBehaviour
 
 	static public void Broadcast (string funcName)
 	{
-		for (int i = 0, imax = list.Count; i < imax; ++i)
+#if UNITY_EDITOR
+		if (Application.isPlaying)
+#endif
 		{
-			UIRoot root = list[i];
-			if (root != null) root.BroadcastMessage(funcName, SendMessageOptions.DontRequireReceiver);
+			for (int i = 0, imax = list.Count; i < imax; ++i)
+			{
+				UIRoot root = list[i];
+				if (root != null) root.BroadcastMessage(funcName, SendMessageOptions.DontRequireReceiver);
+			}
 		}
 	}
 

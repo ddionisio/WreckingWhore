@@ -163,8 +163,8 @@ public class PlayerController : MonoBehaviour {
 
                 mPlatformer.moveSide = 0.0f;
                 mPlatformer.lockDrag = true;
-                mPlatformer.rigidbody.drag = 0.0f;
-                mPlatformer.rigidbody.velocity = Vector3.zero;
+                mPlatformer.GetComponent<Rigidbody>().drag = 0.0f;
+                mPlatformer.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 mPlatformer.jumpCounterCurrent = mPlatformer.jumpCounter;
 
                 if(mKnockbackActive) {
@@ -181,7 +181,7 @@ public class PlayerController : MonoBehaviour {
                 inputEnabled = false;
 
                 mPlatformer.moveSide = 0.0f;
-                mPlatformer.rigidbody.velocity = Vector3.zero;
+                mPlatformer.GetComponent<Rigidbody>().velocity = Vector3.zero;
 
                 mPlatformerSpriteCtrl.animationActive = false;
                 mPlatformerSpriteCtrl.anim.Play("dead");
@@ -250,7 +250,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     public void CalculateKnockbackDir(Vector3 lastHit) {
-        float d = mPlatformer.collider.bounds.center.x - lastHit.x;
+        float d = mPlatformer.GetComponent<Collider>().bounds.center.x - lastHit.x;
         if(d == 0)
             d = 1;
 
@@ -269,7 +269,7 @@ public class PlayerController : MonoBehaviour {
         mKnockbackCurTime = 0.0f;
 
         while(mKnockbackActive && mKnockbackCurTime < knockbackDelay) {
-            mPlatformer.rigidbody.AddForce(mKnockbackDir * knockbackForce);
+            mPlatformer.GetComponent<Rigidbody>().AddForce(mKnockbackDir * knockbackForce);
             mKnockbackCurTime += Time.fixedDeltaTime;
             yield return wait;
         }

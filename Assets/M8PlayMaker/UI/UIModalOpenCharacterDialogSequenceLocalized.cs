@@ -4,16 +4,16 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate UI")]
-    [Tooltip("Opens a character dialog. Will not finish until dialog calls back action. This is for localized version. The last text will display the choices.")]
+    [HutongGames.PlayMaker.Tooltip("Opens a character dialog. Will not finish until dialog calls back action. This is for localized version. The last text will display the choices.")]
     public class UIModalOpenCharacterDialogSequenceLocalized : FsmStateAction
     {
-        [Tooltip("If empty, will use the default modal reference name")]
+        [HutongGames.PlayMaker.Tooltip("If empty, will use the default modal reference name")]
         public FsmString modalRef;
 
-        [Tooltip("Close the dialog after player selects a choice, or just clicks on the dialog")]
+        [HutongGames.PlayMaker.Tooltip("Close the dialog after player selects a choice, or just clicks on the dialog")]
         public FsmBool closeOnAction;
 
-        [Tooltip("The event to set to after a choice is selected, or after click on dialog")]
+        [HutongGames.PlayMaker.Tooltip("The event to set to after a choice is selected, or after click on dialog")]
         public FsmEvent actionEvent;
 
         public FsmString name;

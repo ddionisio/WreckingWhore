@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Scene")]
-    [Tooltip("This is for use with SceneSerializer")]
+    [HutongGames.PlayMaker.Tooltip("This is for use with SceneSerializer")]
     public class SceneObjectGetID : FSMActionComponentBase<SceneSerializer> {
         [RequiredField]
         [UIHint(UIHint.Variable)]

@@ -24,13 +24,7 @@ namespace HutongGames.PlayMaker.Actions
 		[UIHint(UIHint.Variable)]
 		[Tooltip("Optionally store the created object.")]
 		public FsmGameObject storeObject;
-
-		[Tooltip("Use Network.Instantiate to create a Game Object on all clients in a networked game.")]
-		public FsmBool networkInstantiate;
-
-		[Tooltip("Usually 0. The group number allows you to group together network messages which allows you to filter them if so desired.")]
-		public FsmInt networkGroup;
-
+        
 		public override void Reset()
 		{
 			gameObject = null;
@@ -38,8 +32,6 @@ namespace HutongGames.PlayMaker.Actions
 			position = new FsmVector3 { UseVariable = true };
 			rotation = new FsmVector3 { UseVariable = true };
 			storeObject = null;
-			networkInstantiate = false;
-			networkGroup = 0;
 		}
 
 		public override void OnEnter()
@@ -78,14 +70,7 @@ namespace HutongGames.PlayMaker.Actions
 #if !(UNITY_FLASH || UNITY_NACL || UNITY_METRO || UNITY_WP8)
 				GameObject newObject;
 
-				if (!networkInstantiate.Value)
-				{
-					newObject = (GameObject)Object.Instantiate(go, spawnPosition, Quaternion.Euler(spawnRotation));
-				}
-				else
-				{
-					newObject = (GameObject)Network.Instantiate(go, spawnPosition, Quaternion.Euler(spawnRotation), networkGroup.Value);
-				}
+                newObject = (GameObject)Object.Instantiate(go, spawnPosition, Quaternion.Euler(spawnRotation));
 #else
                 var newObject = (GameObject)Object.Instantiate(go, spawnPosition, Quaternion.Euler(spawnRotation));
 #endif

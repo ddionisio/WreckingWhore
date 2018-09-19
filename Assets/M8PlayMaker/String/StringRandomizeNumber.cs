@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate String")]
-    [Tooltip("Set a randomized number on given string. Make sure the format string has a {0}")]
+    [HutongGames.PlayMaker.Tooltip("Set a randomized number on given string. Make sure the format string has a {0}")]
     public class StringRandomizeNumber : FsmStateAction {
         public FsmInt min;
         public FsmInt max;

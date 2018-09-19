@@ -75,7 +75,7 @@ public class TriggerForce : MonoBehaviour {
     void OnTriggerStay(Collider col) {
 
         if(!mColliders.Contains(col)) {
-            Rigidbody body = col.rigidbody;
+            Rigidbody body = col.GetComponent<Rigidbody>();
 
             if(body != null && !body.isKinematic && (_tags.Length == 0 || CheckTag(col.gameObject.tag))) {
                 //check tags
@@ -169,9 +169,9 @@ public class TriggerForce : MonoBehaviour {
                 break;
 
             if(lingerDragOverride)
-                col.rigidbody.drag = lingerDrag;
+                col.GetComponent<Rigidbody>().drag = lingerDrag;
 
-            col.rigidbody.AddForce(dir * forceLinger);
+            col.GetComponent<Rigidbody>().AddForce(dir * forceLinger);
 
             t += Time.fixedDeltaTime;
         }

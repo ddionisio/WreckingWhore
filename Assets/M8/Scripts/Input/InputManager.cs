@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using SimpleJSON;
 
 //generalized input handling, useful for porting to non-unity conventions (e.g. Ouya)
 [AddComponentMenu("M8/Core/InputManager")]
@@ -196,8 +197,38 @@ public class InputManager : MonoBehaviour {
     /// If deletePrefs = true, then remove custom binds from prefs.
     /// </summary>
     public void RevertBinds(bool deletePrefs) {
-        fastJSON.JSON.Instance.Parameters.UseExtensions = false;
-        List<Bind> keys = fastJSON.JSON.Instance.ToObject<List<Bind>>(config.text);
+        var keys = new List<Bind>();
+        var json = JSON.Parse(config.text).AsArray;
+        foreach(var node in json) {
+            var entryNode = node.Value;
+
+            int action = entryNode["action"].AsInt;
+            Control control = !string.IsNullOrEmpty(entryNode["control"].Value) ? (Control)System.Enum.Parse(typeof(Control), entryNode["control"].Value) : Control.Button;
+            bool axisInvert = entryNode["axisInvert"].AsBool;
+            float deadZone = entryNode["deadZone"].AsFloat;
+            bool forceRaw = entryNode["forceRaw"].AsBool;
+
+            List<Key> inpkeys;
+
+            if(entryNode["keys"] != null) {
+                var keyArrayNode = entryNode["keys"].AsArray;
+                inpkeys = new List<Key>(keyArrayNode.Count);
+                for(int i = 0; i < keyArrayNode.Count; i++) {
+                    int player = keyArrayNode[i]["player"].AsInt;
+                    string input = keyArrayNode[i]["input"].Value;
+                    KeyCode code = !string.IsNullOrEmpty(keyArrayNode[i]["code"].Value) ? (KeyCode)System.Enum.Parse(typeof(KeyCode), keyArrayNode[i]["code"].Value) : KeyCode.None;
+                    InputKeyMap map = !string.IsNullOrEmpty(keyArrayNode[i]["map"].Value) ? (InputKeyMap)System.Enum.Parse(typeof(InputKeyMap), keyArrayNode[i]["map"].Value) : InputKeyMap.None;
+                    ButtonAxis axis = !string.IsNullOrEmpty(keyArrayNode[i]["axis"].Value) ? (ButtonAxis)System.Enum.Parse(typeof(ButtonAxis), keyArrayNode[i]["axis"].Value) : ButtonAxis.None;
+                    int index = keyArrayNode[i]["index"].AsInt;
+
+                    inpkeys.Add(new Key() { player = player, input = input, code = code, map = map, axis = axis, index = index });
+                }
+            }
+            else
+                inpkeys = new List<Key>();
+
+            keys.Add(new Bind() { action = action, control = control, deadZone = deadZone, keys = inpkeys });
+        }
 
         foreach(Bind key in keys) {
             if(key != null && key.keys != null) {
@@ -478,8 +509,40 @@ public class InputManager : MonoBehaviour {
         if(config != null) {
             Dictionary<int, BindData> binds = new Dictionary<int, BindData>();
 
-            fastJSON.JSON.Instance.Parameters.UseExtensions = false;
-            List<Bind> keys = fastJSON.JSON.Instance.ToObject<List<Bind>>(config.text);
+            //
+            var keys = new List<Bind>();
+            var json = JSON.Parse(config.text).AsArray;
+            foreach(var node in json) {
+                var entryNode = node.Value;
+
+                int action = entryNode["action"].AsInt;
+                Control control = !string.IsNullOrEmpty(entryNode["control"].Value) ? (Control)System.Enum.Parse(typeof(Control), entryNode["control"].Value) : Control.Button;
+                bool axisInvert = entryNode["axisInvert"].AsBool;
+                float deadZone = entryNode["deadZone"].AsFloat;
+                bool forceRaw = entryNode["forceRaw"].AsBool;
+
+                List<Key> inpkeys;
+
+                if(entryNode["keys"] != null) {
+                    var keyArrayNode = entryNode["keys"].AsArray;
+                    inpkeys = new List<Key>(keyArrayNode.Count);
+                    for(int i = 0; i < keyArrayNode.Count; i++) {
+                        int player = keyArrayNode[i]["player"].AsInt;
+                        string input = keyArrayNode[i]["input"].Value;
+                        KeyCode code = !string.IsNullOrEmpty(keyArrayNode[i]["code"].Value) ? (KeyCode)System.Enum.Parse(typeof(KeyCode), keyArrayNode[i]["code"].Value) : KeyCode.None;
+                        InputKeyMap map = !string.IsNullOrEmpty(keyArrayNode[i]["map"].Value) ? (InputKeyMap)System.Enum.Parse(typeof(InputKeyMap), keyArrayNode[i]["map"].Value) : InputKeyMap.None;
+                        ButtonAxis axis = !string.IsNullOrEmpty(keyArrayNode[i]["axis"].Value) ? (ButtonAxis)System.Enum.Parse(typeof(ButtonAxis), keyArrayNode[i]["axis"].Value) : ButtonAxis.None;
+                        int index = keyArrayNode[i]["index"].AsInt;
+
+                        inpkeys.Add(new Key() { player = player, input = input, code = code, map = map, axis = axis, index = index });
+                    }
+                }
+                else
+                    inpkeys = new List<Key>();
+
+                keys.Add(new Bind() { action = action, control = control, deadZone = deadZone, keys = inpkeys });
+            }
+            //
 
             int highestActionInd = 0;
 

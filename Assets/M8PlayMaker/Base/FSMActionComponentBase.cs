@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     public abstract class FSMActionComponentBase<T> : FsmStateAction where T : Component {
-        [Tooltip("The Game Object to work with.")]
+        [HutongGames.PlayMaker.Tooltip("The Game Object to work with.")]
         public FsmOwnerDefault owner;
 
         public bool checkChildren;

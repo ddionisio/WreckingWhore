@@ -220,9 +220,22 @@ public class tk2dUITextInput : MonoBehaviour
 
     public void SetFocus()
     {
-        if (!IsFocus)
-        {
+        SetFocus(true);
+    }
+
+    /// <summary>
+    /// Sets or removes focus from the text input
+    /// Currently you will need to manually need to remove focus and set focus on the new
+    /// textinput if you wish to do this from a textInput callback, eg. auto advance when
+    /// enter is pressed.
+    /// </summary>
+    public void SetFocus(bool focus)
+    {
+        if (!IsFocus && focus) {
             InputSelected();
+        }
+        else if (IsFocus && !focus) {
+            InputDeselected();
         }
     }
 
@@ -239,7 +252,7 @@ public class tk2dUITextInput : MonoBehaviour
         inputLabel.text = modifiedText;
         inputLabel.Commit();
 
-        while (inputLabel.renderer.bounds.extents.x * 2 > fieldLength)
+        while (inputLabel.GetComponent<Renderer>().bounds.extents.x * 2 > fieldLength)
         {
             modifiedText=modifiedText.Substring(1, modifiedText.Length - 1);
             inputLabel.text = modifiedText;
@@ -415,7 +428,7 @@ public class tk2dUITextInput : MonoBehaviour
 
             cursorOffset += chr.advance * inputLabel.scale.x/2;
         }
-        cursor.transform.localPosition = new Vector3(inputLabel.transform.localPosition.x + (inputLabel.renderer.bounds.extents.x + cursorOffset) * multiplier, cursor.transform.localPosition.y, cursor.transform.localPosition.z);
+        cursor.transform.localPosition = new Vector3(inputLabel.transform.localPosition.x + (inputLabel.GetComponent<Renderer>().bounds.extents.x + cursorOffset) * multiplier, cursor.transform.localPosition.y, cursor.transform.localPosition.z);
     }
 
     private void ShowDisplayText()

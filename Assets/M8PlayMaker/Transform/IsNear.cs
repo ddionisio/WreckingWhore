@@ -3,16 +3,16 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker.TransformLib {
     [ActionCategory("Mate Transform")]
-    [Tooltip("Check if we are close to given target based on radius.")]
+    [HutongGames.PlayMaker.Tooltip("Check if we are close to given target based on radius.")]
     public class IsNear : FsmStateAction {
         [RequiredField]
-        [Tooltip("The GameObject source.")]
+        [HutongGames.PlayMaker.Tooltip("The GameObject source.")]
         public FsmOwnerDefault gameObject;
 
-        [Tooltip("The GameObject to check against.")]
+        [HutongGames.PlayMaker.Tooltip("The GameObject to check against.")]
         public FsmGameObject targetObject;
 
-        [Tooltip("World position to check, or local offset from Target Object if specified.")]
+        [HutongGames.PlayMaker.Tooltip("World position to check, or local offset from Target Object if specified.")]
         public FsmVector3 targetPosition;
 
         public FsmFloat targetRadius;
@@ -25,13 +25,13 @@ namespace M8.PlayMaker.TransformLib {
         public FsmEvent isFalse;
 
         [Title("Draw Debug Radius")]
-        [Tooltip("Draw a debug sphere for the approx. radius.")]
+        [HutongGames.PlayMaker.Tooltip("Draw a debug sphere for the approx. radius.")]
         public FsmBool debug;
 
-        [Tooltip("Color to use for the debug sphere.")]
+        [HutongGames.PlayMaker.Tooltip("Color to use for the debug sphere.")]
         public FsmColor debugColor;
 
-        [Tooltip("Repeat every frame.")]
+        [HutongGames.PlayMaker.Tooltip("Repeat every frame.")]
         public bool everyFrame = true;
 
         public override void Reset() {

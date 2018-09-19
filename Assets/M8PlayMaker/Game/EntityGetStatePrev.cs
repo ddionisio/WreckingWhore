@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Entity")]
-    [Tooltip("Get entity's previous state.")]
+    [HutongGames.PlayMaker.Tooltip("Get entity's previous state.")]
     public class EntityGetStatePrev : FSMActionComponentBase<EntityBase> {
         [RequiredField]
         [UIHint(UIHint.Variable)]

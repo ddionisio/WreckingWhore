@@ -3,10 +3,10 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Animator")]
-    [Tooltip("Check to see if animator timeline is playing.")]
+    [HutongGames.PlayMaker.Tooltip("Check to see if animator timeline is playing.")]
     public class AMCheckPlaying : FsmStateAction {
         [RequiredField]
-        [Tooltip("The Game Object to work with. NOTE: The Game Object must have an AnimatorData component attached.")]
+        [HutongGames.PlayMaker.Tooltip("The Game Object to work with. NOTE: The Game Object must have an AnimatorData component attached.")]
         [CheckForComponent(typeof(AnimatorData))]
         public FsmOwnerDefault gameObject;
 

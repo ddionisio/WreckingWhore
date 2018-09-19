@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEditor;
@@ -14,7 +14,6 @@ using System.Reflection;
 
 public class NGUIEditorTools
 {
-	static Texture2D mWhiteTex;
 	static Texture2D mBackdropTex;
 	static Texture2D mContrastTex;
 	static Texture2D mGradientTex;
@@ -356,8 +355,8 @@ public class NGUIEditorTools
 
 			// Draw the sprite selection popup
 			index = string.IsNullOrEmpty(field) ?
-				EditorGUILayout.Popup(index, list, "DropDownButton", options) :
-				EditorGUILayout.Popup(field, index, list, "DropDownButton", options);
+				DrawPrefixList(index, list, options) :
+				DrawPrefixList(field, index, list, options);
 
 			return list[index];
 		}
@@ -401,7 +400,7 @@ public class NGUIEditorTools
 			}
 
 			// No UI present -- create a new one
-			if (go == null) go = UICreateNewUIWizard.CreateNewUI();
+			if (go == null) go = UICreateNewUIWizard.CreateNewUI(UICreateNewUIWizard.CameraType.Simple2D);
 		}
 		return go;
 	}
@@ -663,6 +662,26 @@ public class NGUIEditorTools
 		return list;
 	}
 
+	static public bool DrawPrefixButton (string text)
+	{
+		return GUILayout.Button(text, "DropDownButton", GUILayout.Width(76f));
+	}
+
+	static public bool DrawPrefixButton (string text, params GUILayoutOption[] options)
+	{
+		return GUILayout.Button(text, "DropDownButton", options);
+	}
+
+	static public int DrawPrefixList (int index, string[] list, params GUILayoutOption[] options)
+	{
+		return EditorGUILayout.Popup(index, list, "DropDownButton", options);
+	}
+
+	static public int DrawPrefixList (string text, int index, string[] list, params GUILayoutOption[] options)
+	{
+		return EditorGUILayout.Popup(text, index, list, "DropDownButton", options);
+	}
+
 	/// <summary>
 	/// Draw a sprite preview.
 	/// </summary>
@@ -678,6 +697,8 @@ public class NGUIEditorTools
 
 	static public void DrawSprite (Texture2D tex, Rect drawRect, UISpriteData sprite, Color color, Material mat)
 	{
+		if (!tex || sprite == null) return;
+
 		// Create the texture rectangle that is centered inside rect.
 		Rect outerRect = drawRect;
 		outerRect.width = sprite.width;
@@ -781,10 +802,13 @@ public class NGUIEditorTools
 
 	public static void DrawTexture (Texture2D tex, Rect rect, Rect uv, Color color, Material mat)
 	{
+		int w = Mathf.RoundToInt(tex.width * uv.width);
+		int h = Mathf.RoundToInt(tex.height * uv.height);
+
 		// Create the texture rectangle that is centered inside rect.
 		Rect outerRect = rect;
-		outerRect.width = tex.width;
-		outerRect.height = tex.height;
+		outerRect.width = w;
+		outerRect.height = h;
 
 		if (outerRect.width > 0f)
 		{
@@ -822,6 +846,7 @@ public class NGUIEditorTools
 			// using BeginGroup/EndGroup, and there is no way to specify a UV rect... le'suq.
 			UnityEditor.EditorGUI.DrawPreviewTexture(outerRect, tex, mat);
 		}
+		GUI.color = Color.white;
 
 		// Draw the lines around the sprite
 		Handles.color = Color.black;
@@ -831,7 +856,7 @@ public class NGUIEditorTools
 		Handles.DrawLine(new Vector3(outerRect.xMin, outerRect.yMax), new Vector3(outerRect.xMax, outerRect.yMax));
 
 		// Sprite size label
-		string text = string.Format("Texture Size: {0}x{1}", Mathf.RoundToInt(tex.width), Mathf.RoundToInt(tex.height));
+		string text = string.Format("Texture Size: {0}x{1}", w, h);
 		EditorGUI.DropShadowLabel(GUILayoutUtility.GetRect(Screen.width, 18f), text);
 	}
 
@@ -839,15 +864,16 @@ public class NGUIEditorTools
 	/// Draw a sprite selection field.
 	/// </summary>
 
-	static public void SpriteField (string fieldName, UIAtlas atlas, string spriteName,
-		SpriteSelector.Callback callback, params GUILayoutOption[] options)
+	static public void DrawSpriteField (string label, UIAtlas atlas, string spriteName, SpriteSelector.Callback callback, params GUILayoutOption[] options)
 	{
 		GUILayout.BeginHorizontal();
-		GUILayout.Label(fieldName, GUILayout.Width(76f));
+		GUILayout.Label(label, GUILayout.Width(76f));
 
 		if (GUILayout.Button(spriteName, "MiniPullDown", options))
 		{
-			SpriteSelector.Show(atlas, spriteName, callback);
+			NGUISettings.atlas = atlas;
+			NGUISettings.selectedSprite = spriteName;
+			SpriteSelector.Show(callback);
 		}
 		GUILayout.EndHorizontal();
 	}
@@ -856,26 +882,38 @@ public class NGUIEditorTools
 	/// Draw a sprite selection field.
 	/// </summary>
 
-	static public void SpriteField (string fieldName, UIAtlas atlas, string spriteName, SpriteSelector.Callback callback)
+	static public void DrawPaddedSpriteField (string label, UIAtlas atlas, string spriteName, SpriteSelector.Callback callback, params GUILayoutOption[] options)
 	{
-		SpriteField(fieldName, null, atlas, spriteName, callback);
+		GUILayout.BeginHorizontal();
+		GUILayout.Label(label, GUILayout.Width(76f));
+
+		if (GUILayout.Button(spriteName, "MiniPullDown", options))
+		{
+			NGUISettings.atlas = atlas;
+			NGUISettings.selectedSprite = spriteName;
+			SpriteSelector.Show(callback);
+		}
+		GUILayout.Space(18f);
+		GUILayout.EndHorizontal();
 	}
 
 	/// <summary>
 	/// Draw a sprite selection field.
 	/// </summary>
 
-	static public void SpriteField (string fieldName, string caption, UIAtlas atlas, string spriteName, SpriteSelector.Callback callback)
+	static public void DrawSpriteField (string label, string caption, UIAtlas atlas, string spriteName, SpriteSelector.Callback callback, params GUILayoutOption[] options)
 	{
 		GUILayout.BeginHorizontal();
-		GUILayout.Label(fieldName, GUILayout.Width(76f));
+		GUILayout.Label(label, GUILayout.Width(76f));
 
 		if (atlas.GetSprite(spriteName) == null)
 			spriteName = "";
 
-		if (GUILayout.Button(spriteName, "MiniPullDown", GUILayout.Width(120f)))
+		if (GUILayout.Button(spriteName, "MiniPullDown", options))
 		{
-			SpriteSelector.Show(atlas, spriteName, callback);
+			NGUISettings.atlas = atlas;
+			NGUISettings.selectedSprite = spriteName;
+			SpriteSelector.Show(callback);
 		}
 		
 		if (!string.IsNullOrEmpty(caption))
@@ -890,14 +928,16 @@ public class NGUIEditorTools
 	/// Draw a simple sprite selection button.
 	/// </summary>
 
-	static public bool SimpleSpriteField (UIAtlas atlas, string spriteName, SpriteSelector.Callback callback, params GUILayoutOption[] options)
+	static public bool DrawSpriteField (UIAtlas atlas, string spriteName, SpriteSelector.Callback callback, params GUILayoutOption[] options)
 	{
 		if (atlas.GetSprite(spriteName) == null)
 			spriteName = "";
 
-		if (GUILayout.Button(spriteName, "DropDown", options))
+		if (NGUIEditorTools.DrawPrefixButton(spriteName, options))
 		{
-			SpriteSelector.Show(atlas, spriteName, callback);
+			NGUISettings.atlas = atlas;
+			NGUISettings.selectedSprite = spriteName;
+			SpriteSelector.Show(callback);
 			return true;
 		}
 		return false;
@@ -907,12 +947,70 @@ public class NGUIEditorTools
 	static string mLastSprite = null;
 
 	/// <summary>
+	/// Draw a sprite selection field.
+	/// </summary>
+
+	static public void DrawSpriteField (string label, SerializedObject ob, string spriteField, params GUILayoutOption[] options)
+	{
+		DrawSpriteField(label, ob, ob.FindProperty("atlas"), ob.FindProperty(spriteField), 76f, false, options);
+	}
+
+	/// <summary>
+	/// Draw a sprite selection field.
+	/// </summary>
+
+	static public void DrawSpriteField (string label, SerializedObject ob, SerializedProperty atlas, SerializedProperty sprite, params GUILayoutOption[] options)
+	{
+		DrawSpriteField(label, ob, atlas, sprite, 76f, false, options);
+	}
+
+	/// <summary>
+	/// Draw a sprite selection field.
+	/// </summary>
+
+	static public void DrawSpriteField (string label, SerializedObject ob, SerializedProperty atlas, SerializedProperty sprite, float width, bool padded, params GUILayoutOption[] options)
+	{
+		if (atlas != null && atlas.objectReferenceValue != null)
+		{
+			GUILayout.BeginHorizontal();
+			GUILayout.Label(label, GUILayout.Width(width));
+
+			if (sprite == null)
+			{
+				GUILayout.Label("Invalid field name");
+			}
+			else
+			{
+				string spriteName = sprite.hasMultipleDifferentValues ? "-" : sprite.stringValue;
+
+				if (padded) GUILayout.BeginHorizontal();
+
+				EditorGUI.BeginDisabledGroup(atlas.hasMultipleDifferentValues);
+				{
+					if (GUILayout.Button(spriteName, "MiniPullDown", options))
+						SpriteSelector.Show(ob, sprite, atlas.objectReferenceValue as UIAtlas);
+				}
+				EditorGUI.EndDisabledGroup();
+
+				if (padded)
+				{
+					GUILayout.Space(18f);
+					GUILayout.EndHorizontal();
+				}
+			}
+			GUILayout.EndHorizontal();
+		}
+	}
+
+	/// <summary>
 	/// Convenience function that displays a list of sprites and returns the selected value.
 	/// </summary>
 
-	static public void AdvancedSpriteField (UIAtlas atlas, string spriteName, SpriteSelector.Callback callback, bool editable,
+	static public void DrawAdvancedSpriteField (UIAtlas atlas, string spriteName, SpriteSelector.Callback callback, bool editable,
 		params GUILayoutOption[] options)
 	{
+		if (atlas == null) return;
+
 		// Give the user a warning if there are no sprites in the atlas
 		if (atlas.spriteList.Count == 0)
 		{
@@ -923,9 +1021,11 @@ public class NGUIEditorTools
 		// Sprite selection drop-down list
 		GUILayout.BeginHorizontal();
 		{
-			if (GUILayout.Button("Sprite", "DropDownButton", GUILayout.Width(76f)))
+			if (NGUIEditorTools.DrawPrefixButton("Sprite"))
 			{
-				SpriteSelector.Show(atlas, spriteName, callback);
+				NGUISettings.atlas = atlas;
+				NGUISettings.selectedSprite = spriteName;
+				SpriteSelector.Show(callback);
 			}
 
 			if (editable)
@@ -968,6 +1068,7 @@ public class NGUIEditorTools
 							spriteName = newName;
 							mEditedName = null;
 
+							NGUISettings.atlas = atlas;
 							NGUISettings.selectedSprite = spriteName;
 						}
 					}
@@ -982,12 +1083,58 @@ public class NGUIEditorTools
 
 				if (GUILayout.Button("Edit", GUILayout.Width(40f)))
 				{
+					NGUISettings.atlas = atlas;
 					NGUISettings.selectedSprite = spriteName;
 					Select(atlas.gameObject);
 				}
 			}
 		}
 		GUILayout.EndHorizontal();
+	}
+
+	/// <summary>
+	/// Repaints all inspector windows related to sprite drawing.
+	/// </summary>
+
+	static public void RepaintSprites ()
+	{
+		if (UIAtlasInspector.instance != null)
+			UIAtlasInspector.instance.Repaint();
+
+		if (UIAtlasMaker.instance != null)
+			UIAtlasMaker.instance.Repaint();
+
+		if (SpriteSelector.instance != null)
+			SpriteSelector.instance.Repaint();
+	}
+
+	/// <summary>
+	/// Select the specified sprite within the currently selected atlas.
+	/// </summary>
+
+	static public void SelectSprite (string spriteName)
+	{
+		if (NGUISettings.atlas != null)
+		{
+			NGUISettings.selectedSprite = spriteName;
+			NGUIEditorTools.Select(NGUISettings.atlas.gameObject);
+			RepaintSprites();
+		}
+	}
+
+	/// <summary>
+	/// Select the specified atlas and sprite.
+	/// </summary>
+
+	static public void SelectSprite (UIAtlas atlas, string spriteName)
+	{
+		if (atlas != null)
+		{
+			NGUISettings.atlas = atlas;
+			NGUISettings.selectedSprite = spriteName;
+			NGUIEditorTools.Select(atlas.gameObject);
+			RepaintSprites();
+		}
 	}
 
 	/// <summary>
@@ -1097,9 +1244,14 @@ public class NGUIEditorTools
 
 		GUI.changed = false;
 #if UNITY_3_5
-		if (!GUILayout.Toggle(true, text, "dragtab")) state = !state;
+		if (state) text = "\u25B2 " + text;
+		else text = "\u25BC " + text;
+		if (!GUILayout.Toggle(true, text, "dragtab", GUILayout.MinWidth(20f))) state = !state;
 #else
-		if (!GUILayout.Toggle(true, "<b><size=11>" + text + "</size></b>", "dragtab")) state = !state;
+		text = "<b><size=11>" + text + "</size></b>";
+		if (state) text = "\u25B2 " + text;
+		else text = "\u25BC " + text;
+		if (!GUILayout.Toggle(true, text, "dragtab", GUILayout.MinWidth(20f))) state = !state;
 #endif
 		if (GUI.changed) EditorPrefs.SetBool(key, state);
 
@@ -1159,6 +1311,96 @@ public class NGUIEditorTools
 	}
 
 	/// <summary>
+	/// Helper function that draws a serialized property.
+	/// </summary>
+
+	static public SerializedProperty DrawProperty (SerializedObject serializedObject, string property, params GUILayoutOption[] options)
+	{
+		return DrawProperty(null, serializedObject, property, false, options);
+	}
+
+	/// <summary>
+	/// Helper function that draws a serialized property.
+	/// </summary>
+
+	static public SerializedProperty DrawProperty (string label, SerializedObject serializedObject, string property, params GUILayoutOption[] options)
+	{
+		return DrawProperty(label, serializedObject, property, false, options);
+	}
+
+	/// <summary>
+	/// Helper function that draws a serialized property.
+	/// </summary>
+
+	static public SerializedProperty DrawPaddedProperty (SerializedObject serializedObject, string property, params GUILayoutOption[] options)
+	{
+		return DrawProperty(null, serializedObject, property, true, options);
+	}
+
+	/// <summary>
+	/// Helper function that draws a serialized property.
+	/// </summary>
+
+	static public SerializedProperty DrawPaddedProperty (string label, SerializedObject serializedObject, string property, params GUILayoutOption[] options)
+	{
+		return DrawProperty(label, serializedObject, property, true, options);
+	}
+
+	/// <summary>
+	/// Helper function that draws a serialized property.
+	/// </summary>
+
+	static public SerializedProperty DrawProperty (string label, SerializedObject serializedObject, string property, bool padding, params GUILayoutOption[] options)
+	{
+		SerializedProperty sp = serializedObject.FindProperty(property);
+
+		if (sp != null)
+		{
+			if (padding) EditorGUILayout.BeginHorizontal();
+			
+			if (label != null) EditorGUILayout.PropertyField(sp, new GUIContent(label), options);
+			else EditorGUILayout.PropertyField(sp, options);
+
+			if (padding) 
+			{
+				GUILayout.Space(18f);
+				EditorGUILayout.EndHorizontal();
+			}
+		}
+		return sp;
+	}
+
+	/// <summary>
+	/// Helper function that draws a serialized property.
+	/// </summary>
+
+	static public void DrawProperty (string label, SerializedProperty sp, params GUILayoutOption[] options)
+	{
+		DrawProperty(label, sp, true, options);
+	}
+
+	/// <summary>
+	/// Helper function that draws a serialized property.
+	/// </summary>
+
+	static public void DrawProperty (string label, SerializedProperty sp, bool padding, params GUILayoutOption[] options)
+	{
+		if (sp != null)
+		{
+			if (padding) EditorGUILayout.BeginHorizontal();
+
+			if (label != null) EditorGUILayout.PropertyField(sp, new GUIContent(label), options);
+			else EditorGUILayout.PropertyField(sp, options);
+
+			if (padding)
+			{
+				GUILayout.Space(18f);
+				EditorGUILayout.EndHorizontal();
+			}
+		}
+	}
+
+	/// <summary>
 	/// Determine the distance from the mouse position to the world rectangle specified by the 4 points.
 	/// </summary>
 
@@ -1179,17 +1421,27 @@ public class NGUIEditorTools
 	{
 		BetterList<UIWidget> list = new BetterList<UIWidget>();
 
-		for (int i = 0; i < UIWidget.list.size; ++i)
+		for (int i = 0; i < UIPanel.list.size; ++i)
 		{
-			UIWidget w = UIWidget.list[i];
-			Vector3[] corners = w.worldCorners;
-			if (SceneViewDistanceToRectangle(corners, mousePos) == 0f)
-				list.Add(w);
-		}
+			UIPanel p = UIPanel.list.buffer[i];
 
-		list.Sort(delegate(UIWidget w1, UIWidget w2) { return w2.depth.CompareTo(w1.depth); });
+			for (int b = 0; b < p.widgets.size; ++b)
+			{
+				UIWidget w = p.widgets.buffer[b];
+				Vector3[] corners = w.worldCorners;
+				if (SceneViewDistanceToRectangle(corners, mousePos) == 0f)
+					list.Add(w);
+			}
+		}
+		list.Sort(UIWidget.FullCompareFunc);
 		return list;
 	}
+
+	/// <summary>
+	/// Select the topmost widget underneath the specified screen coordinate.
+	/// </summary>
+
+	static public bool SelectWidget (Vector2 pos) { return SelectWidget(null, pos, true); }
 
 	/// <summary>
 	/// Select the next widget in line.
@@ -1199,27 +1451,44 @@ public class NGUIEditorTools
 	{
 		GameObject go = null;
 		BetterList<UIWidget> widgets = SceneViewRaycast(pos);
+		if (widgets == null || widgets.size == 0) return false;
+		bool found = false;
 
-		if (inFront)
+		if (!inFront)
 		{
-			if (widgets.size > 0)
+			if (start != null)
 			{
 				for (int i = 0; i < widgets.size; ++i)
 				{
 					UIWidget w = widgets[i];
-					if (w.cachedGameObject == start) break;
+
+					if (w.cachedGameObject == start)
+					{
+						found = true;
+						break;
+					}
 					go = w.cachedGameObject;
 				}
 			}
+			if (!found) go = widgets[0].cachedGameObject;
 		}
 		else
 		{
-			for (int i = widgets.size; i > 0; )
+			if (start != null)
 			{
-				UIWidget w = widgets[--i];
-				if (w.cachedGameObject == start) break;
-				go = w.cachedGameObject;
+				for (int i = widgets.size; i > 0; )
+				{
+					UIWidget w = widgets[--i];
+
+					if (w.cachedGameObject == start)
+					{
+						found = true;
+						break;
+					}
+					go = w.cachedGameObject;
+				}
 			}
+			if (!found) go = widgets[widgets.size - 1].cachedGameObject;
 		}
 
 		if (go != null && go != start)
@@ -1228,28 +1497,6 @@ public class NGUIEditorTools
 			return true;
 		}
 		return false;
-	}
-
-	/// <summary>
-	/// Select the next widget or container.
-	/// </summary>
-
-	static public bool SelectWidgetOrContainer (GameObject go, Vector2 pos, bool inFront)
-	{
-		if (!SelectWidget(go, pos, inFront))
-		{
-			if (inFront)
-			{
-				UIWidgetContainer wc = NGUITools.FindInParents<UIWidgetContainer>(go);
-
-				if (wc != null && wc.gameObject != go)
-				{
-					Selection.activeGameObject = wc.gameObject;
-					return true;
-				}
-			}
-		}
-		return true;
 	}
 
 	/// <summary>
@@ -1298,6 +1545,83 @@ public class NGUIEditorTools
 	}
 
 	/// <summary>
+	/// Gets the internal class ID of the specified type.
+	/// </summary>
+
+	static public int GetClassID (System.Type type)
+	{
+		GameObject go = EditorUtility.CreateGameObjectWithHideFlags("Temp", HideFlags.HideAndDontSave);
+		Component uiSprite = go.AddComponent(type);
+		SerializedObject ob = new SerializedObject(uiSprite);
+		int classID = ob.FindProperty("m_Script").objectReferenceInstanceIDValue;
+		NGUITools.DestroyImmediate(go);
+		return classID;
+	}
+
+	/// <summary>
+	/// Gets the internal class ID of the specified type.
+	/// </summary>
+
+	static public int GetClassID<T> () where T : MonoBehaviour { return GetClassID(typeof(T)); }
+
+	/// <summary>
+	/// Convenience function that replaces the specified MonoBehaviour with one of specified type.
+	/// </summary>
+
+	static public SerializedObject ReplaceClass (MonoBehaviour mb, System.Type type)
+	{
+		int id = GetClassID(type);
+		SerializedObject ob = new SerializedObject(mb);
+		ob.Update();
+		ob.FindProperty("m_Script").objectReferenceInstanceIDValue = id;
+		ob.ApplyModifiedProperties();
+		ob.Update();
+		return ob;
+	}
+
+	/// <summary>
+	/// Convenience function that replaces the specified MonoBehaviour with one of specified class ID.
+	/// </summary>
+
+	static public SerializedObject ReplaceClass (MonoBehaviour mb, int classID)
+	{
+		SerializedObject ob = new SerializedObject(mb);
+		ob.Update();
+		ob.FindProperty("m_Script").objectReferenceInstanceIDValue = classID;
+		ob.ApplyModifiedProperties();
+		ob.Update();
+		return ob;
+	}
+
+	/// <summary>
+	/// Convenience function that replaces the specified MonoBehaviour with one of specified class ID.
+	/// </summary>
+
+	static public void ReplaceClass (SerializedObject ob, int classID)
+	{
+		ob.FindProperty("m_Script").objectReferenceInstanceIDValue = classID;
+		ob.ApplyModifiedProperties();
+		ob.Update();
+	}
+
+	/// <summary>
+	/// Convenience function that replaces the specified MonoBehaviour with one of specified class ID.
+	/// </summary>
+
+	static public void ReplaceClass (SerializedObject ob, System.Type type)
+	{
+		ob.FindProperty("m_Script").objectReferenceInstanceIDValue = GetClassID(type);
+		ob.ApplyModifiedProperties();
+		ob.Update();
+	}
+
+	/// <summary>
+	/// Convenience function that replaces the specified MonoBehaviour with one of specified type.
+	/// </summary>
+
+	static public T ReplaceClass<T> (MonoBehaviour mb) where T : MonoBehaviour { return ReplaceClass(mb, typeof(T)).targetObject as T; }
+
+	/// <summary>
 	/// Automatically upgrade all of the UITextures in the scene to Sprites if they can be found within the specified atlas.
 	/// </summary>
 
@@ -1312,11 +1636,7 @@ public class NGUIEditorTools
 				UIWidgetInspector.instance.target as UITexture : null;
 
 			// Determine the object instance ID of the UISprite class
-			GameObject go = EditorUtility.CreateGameObjectWithHideFlags("Temp", HideFlags.HideAndDontSave);
-			UISprite uiSprite = go.AddComponent<UISprite>();
-			SerializedObject ob = new SerializedObject(uiSprite);
-			int spriteID = ob.FindProperty("m_Script").objectReferenceInstanceIDValue;
-			NGUITools.DestroyImmediate(go);
+			int spriteID = GetClassID<UISprite>();
 
 			// Run through all the UI textures and change them to sprites
 			for (int i = 0; i < uits.Count; ++i)
@@ -1329,11 +1649,7 @@ public class NGUIEditorTools
 
 					if (atlasSprite != null)
 					{
-						ob = new SerializedObject(uiTexture);
-						ob.Update();
-						ob.FindProperty("m_Script").objectReferenceInstanceIDValue = spriteID;
-						ob.ApplyModifiedProperties();
-						ob.Update();
+						SerializedObject ob = ReplaceClass(uiTexture, spriteID);
 						ob.FindProperty("mSpriteName").stringValue = uiTexture.mainTexture.name;
 						ob.FindProperty("mAtlas").objectReferenceValue = NGUISettings.atlas;
 						ob.ApplyModifiedProperties();
@@ -1349,5 +1665,179 @@ public class NGUIEditorTools
 				Selection.activeGameObject = null;
 			}
 		}
+	}
+
+	class MenuEntry
+	{
+		public string name;
+		public GameObject go;
+		public MenuEntry (string name, GameObject go) { this.name = name; this.go = go; }
+	}
+
+	/// <summary>
+	/// Show a sprite selection context menu listing all sprites under the specified screen position.
+	/// </summary>
+
+	static public void ShowSpriteSelectionMenu (Vector2 screenPos)
+	{
+		BetterList<UIWidget> widgets = NGUIEditorTools.SceneViewRaycast(screenPos);
+		BetterList<UIWidgetContainer> containers = new BetterList<UIWidgetContainer>();
+		BetterList<MenuEntry> entries = new BetterList<MenuEntry>();
+		BetterList<UIPanel> panels = new BetterList<UIPanel>();
+
+		bool divider = false;
+		UIWidget topWidget = null;
+		UIPanel topPanel = null;
+
+		// Process widgets and their containers in the raycast order
+		for (int i = 0; i < widgets.size; ++i)
+		{
+			UIWidget w = widgets[i];
+			if (topWidget == null) topWidget = w;
+
+			UIPanel panel = w.panel;
+			if (topPanel == null) topPanel = panel;
+
+			if (panel != null && !panels.Contains(panel))
+			{
+				panels.Add(panel);
+
+				if (!divider)
+				{
+					entries.Add(null);
+					divider = true;
+				}
+				entries.Add(new MenuEntry(panel.name + " (panel)", panel.gameObject));
+			}
+
+			UIWidgetContainer wc = NGUITools.FindInParents<UIWidgetContainer>(w.cachedGameObject);
+
+			// If we get a new container, we should add it to the list
+			if (wc != null && !containers.Contains(wc))
+			{
+				containers.Add(wc);
+
+				// Only proceed if there is no widget on the container
+				if (wc.gameObject != w.cachedGameObject)
+				{
+					if (!divider)
+					{
+						entries.Add(null);
+						divider = true;
+					}
+					entries.Add(new MenuEntry(wc.name + " (container)", wc.gameObject));
+				}
+			}
+
+			string name = (i + 1 == widgets.size) ? (w.name + " (top-most)") : w.name;
+			entries.Add(new MenuEntry(name, w.gameObject));
+			divider = false;
+		}
+
+		// Common items used by NGUI
+		NGUIContextMenu.AddCommonItems(Selection.activeGameObject);
+
+		// Add widgets to the menu in the reverse order so that they are shown with the top-most widget first (on top)
+		for (int i = entries.size; i > 0; )
+		{
+			MenuEntry ent = entries[--i];
+
+			if (ent != null)
+			{
+				NGUIContextMenu.AddItem("Select/" + ent.name, Selection.activeGameObject == ent.go,
+					delegate(object go) { Selection.activeGameObject = (GameObject)go; }, ent.go);
+			}
+			else if (!divider)
+			{
+				NGUIContextMenu.AddSeparator("Select/");
+			}
+		}
+		NGUIContextMenu.AddHelp(Selection.activeGameObject, true);
+		NGUIContextMenu.Show();
+	}
+	/// <summary>
+	/// Load the asset at the specified path.
+	/// </summary>
+
+	static public Object LoadAsset (string path)
+	{
+		if (string.IsNullOrEmpty(path)) return null;
+		return AssetDatabase.LoadMainAssetAtPath(path);
+	}
+
+	/// <summary>
+	/// Convenience function to load an asset of specified type, given the full path to it.
+	/// </summary>
+
+	static public T LoadAsset<T> (string path) where T: Object
+	{
+		Object obj = LoadAsset(path);
+		if (obj == null) return null;
+
+		T val = obj as T;
+		if (val != null) return val;
+
+		if (typeof(T).IsSubclassOf(typeof(Component)))
+		{
+			if (obj.GetType() == typeof(GameObject))
+			{
+				GameObject go = obj as GameObject;
+				return go.GetComponent(typeof(T)) as T;
+			}
+		}
+		return null;
+	}
+
+	/// <summary>
+	/// Get the specified object's GUID.
+	/// </summary>
+
+	static public string ObjectToGUID (Object obj)
+	{
+		string path = AssetDatabase.GetAssetPath(obj);
+		return (!string.IsNullOrEmpty(path)) ? AssetDatabase.AssetPathToGUID(path) : null;
+	}
+
+#if !UNITY_3_5
+	static MethodInfo s_GetInstanceIDFromGUID;
+#endif
+
+	/// <summary>
+	/// Convert the specified GUID to an object reference.
+	/// </summary>
+
+	static public Object GUIDToObject (string guid)
+	{
+		if (string.IsNullOrEmpty(guid)) return null;
+#if !UNITY_3_5
+		// This method is not going to be available in Unity 3.5
+		if (s_GetInstanceIDFromGUID == null)
+			s_GetInstanceIDFromGUID = typeof(AssetDatabase).GetMethod("GetInstanceIDFromGUID", BindingFlags.Static | BindingFlags.NonPublic);
+		int id = (int)s_GetInstanceIDFromGUID.Invoke(null, new object[] { guid });
+		if (id != 0) return EditorUtility.InstanceIDToObject(id);
+#endif
+		string path = AssetDatabase.GUIDToAssetPath(guid);
+		if (string.IsNullOrEmpty(path)) return null;
+		return AssetDatabase.LoadAssetAtPath(path, typeof(Object));
+	}
+
+	/// <summary>
+	/// Convert the specified GUID to an object reference of specified type.
+	/// </summary>
+
+	static public T GUIDToObject<T> (string guid) where T : Object
+	{
+		Object obj = GUIDToObject(guid);
+		if (obj == null) return null;
+
+		System.Type objType = obj.GetType();
+		if (objType == typeof(T) || objType.IsSubclassOf(typeof(T))) return obj as T;
+
+		if (objType == typeof(GameObject) && typeof(T).IsSubclassOf(typeof(Component)))
+		{
+			GameObject go = obj as GameObject;
+			return go.GetComponent(typeof(T)) as T;
+		}
+		return null;
 	}
 }

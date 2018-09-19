@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -34,7 +34,7 @@ public class UIToggledObjects : MonoBehaviour
 			else target = null;
 
 #if UNITY_EDITOR
-			UnityEditor.EditorUtility.SetDirty(this);
+			NGUITools.SetDirty(this);
 #endif
 		}
 
@@ -47,13 +47,15 @@ public class UIToggledObjects : MonoBehaviour
 
 	public void Toggle ()
 	{
+		bool val = UIToggle.current.value;
+
 		if (enabled)
 		{
 			for (int i = 0; i < activate.Count; ++i)
-				Set(activate[i], UIToggle.current.value);
+				Set(activate[i], val);
 
 			for (int i = 0; i < deactivate.Count; ++i)
-				Set(deactivate[i], !UIToggle.current.value);
+				Set(deactivate[i], !val);
 		}
 	}
 

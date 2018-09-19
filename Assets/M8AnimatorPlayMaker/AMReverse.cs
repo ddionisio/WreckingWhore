@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Animator")]
-    [Tooltip("Reverse animator timeline. This will only work if there is a current Take set to AnimatorData (via Play)")]
+    [HutongGames.PlayMaker.Tooltip("Reverse animator timeline. This will only work if there is a current Take set to AnimatorData (via Play)")]
     public class AMReverse : FsmStateAction {
         public enum Type {
             Toggle,
@@ -12,7 +12,7 @@ namespace M8.PlayMaker {
         }
 
         [RequiredField]
-        [Tooltip("The Game Object to work with. NOTE: The Game Object must have an AnimatorData component attached.")]
+        [HutongGames.PlayMaker.Tooltip("The Game Object to work with. NOTE: The Game Object must have an AnimatorData component attached.")]
         [CheckForComponent(typeof(AnimatorData))]
         public FsmOwnerDefault gameObject;
 

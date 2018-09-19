@@ -20,7 +20,7 @@ public class TransAnimSpinner : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if(rigidbody == null) {
+        if(GetComponent<Rigidbody>() == null) {
             if(local) {
                 transform.localEulerAngles = transform.localEulerAngles + rotatePerSecond * Time.deltaTime;
             }
@@ -32,14 +32,14 @@ public class TransAnimSpinner : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        if(rigidbody != null) {
+        if(GetComponent<Rigidbody>() != null) {
             if(local) {
                 Vector3 eulers = transform.eulerAngles;
-                rigidbody.MoveRotation(Quaternion.Euler(eulers + rotatePerSecond * Time.fixedDeltaTime));
+                GetComponent<Rigidbody>().MoveRotation(Quaternion.Euler(eulers + rotatePerSecond * Time.fixedDeltaTime));
             }
             else {
                 mEulerAnglesOrig += rotatePerSecond * Time.fixedDeltaTime;
-                rigidbody.MoveRotation(Quaternion.Euler(mEulerAnglesOrig));
+                GetComponent<Rigidbody>().MoveRotation(Quaternion.Euler(mEulerAnglesOrig));
             }
         }
         else if(forceFixedUpdate) {

@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Input")]
-    [Tooltip("Wait for an input response from given player's input action.  Note: Refer to the generated InputAction.cs for action reference.")]
+    [HutongGames.PlayMaker.Tooltip("Wait for an input response from given player's input action.  Note: Refer to the generated InputAction.cs for action reference.")]
     public class InputListen : FsmStateAction {
         public FsmInt player;
         public FsmInt action;

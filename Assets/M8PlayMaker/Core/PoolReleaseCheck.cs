@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Pool")]
-    [Tooltip("Check if given game object is released")]
+    [HutongGames.PlayMaker.Tooltip("Check if given game object is released")]
     public class PoolReleaseCheck : FsmStateAction {
         public FsmString group;
 

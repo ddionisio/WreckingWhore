@@ -3,11 +3,11 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Entity")]
-    [Tooltip("Warp to given location (use EntityWarp).")]
+    [HutongGames.PlayMaker.Tooltip("Warp to given location (use EntityWarp).")]
     public class EntityWarpTo : FSMActionComponentBase<EntityWarp> {
         public FsmGameObject target;
 
-        [Tooltip("If target is none, this is where to warp to.")]
+        [HutongGames.PlayMaker.Tooltip("If target is none, this is where to warp to.")]
         public FsmVector2 location;
 
         public FsmEvent success;

@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Scene")]
-    [Tooltip("Set the value to variable as either float or integer.  Only one or the other, not both!")]
+    [HutongGames.PlayMaker.Tooltip("Set the value to variable as either float or integer.  Only one or the other, not both!")]
     public class SceneValueSet : FsmStateAction {
         [RequiredField]
         public FsmString name;

@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -15,11 +15,12 @@ public class UICameraEditor : Editor
 		UICamera cam = target as UICamera;
 		GUILayout.Space(3f);
 
+		serializedObject.Update();
+
 		if (UICamera.eventHandler != cam)
 		{
-			serializedObject.Update();
+			EditorGUILayout.PropertyField(serializedObject.FindProperty("eventType"));
 			EditorGUILayout.PropertyField(serializedObject.FindProperty("eventReceiverMask"), new GUIContent("Event Mask"));
-			EditorGUILayout.PropertyField(serializedObject.FindProperty("clipRaycasts"));
 			serializedObject.ApplyModifiedProperties();
 
 			EditorGUILayout.HelpBox("All other settings are inherited from the First Camera.", MessageType.Info);
@@ -31,21 +32,18 @@ public class UICameraEditor : Editor
 		}
 		else
 		{
-			serializedObject.Update();
-
 			SerializedProperty mouse = serializedObject.FindProperty("useMouse");
 			SerializedProperty touch = serializedObject.FindProperty("useTouch");
 			SerializedProperty keyboard = serializedObject.FindProperty("useKeyboard");
 			SerializedProperty controller = serializedObject.FindProperty("useController");
 
+			EditorGUILayout.PropertyField(serializedObject.FindProperty("eventType"));
 			EditorGUILayout.PropertyField(serializedObject.FindProperty("eventReceiverMask"), new GUIContent("Event Mask"));
-			EditorGUILayout.PropertyField(serializedObject.FindProperty("clipRaycasts"));
 			EditorGUILayout.PropertyField(serializedObject.FindProperty("debug"));
 
 			EditorGUI.BeginDisabledGroup(!mouse.boolValue && !touch.boolValue);
 			{
 				EditorGUILayout.PropertyField(serializedObject.FindProperty("allowMultiTouch"));
-				EditorGUILayout.PropertyField(serializedObject.FindProperty("stickyPress"));
 			}
 			EditorGUI.EndDisabledGroup();
 
@@ -91,25 +89,25 @@ public class UICameraEditor : Editor
 				{
 					EditorGUI.BeginDisabledGroup(!mouse.boolValue);
 					GUILayout.BeginHorizontal();
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("mouseDragThreshold"), new GUIContent("Mouse Drag"));
-					GUILayout.Label("pixels", GUILayout.MinWidth(100f));
+					EditorGUILayout.PropertyField(serializedObject.FindProperty("mouseDragThreshold"), new GUIContent("Mouse Drag"), GUILayout.Width(120f));
+					GUILayout.Label("pixels");
 					GUILayout.EndHorizontal();
 
 					GUILayout.BeginHorizontal();
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("mouseClickThreshold"), new GUIContent("Mouse Click"));
-					GUILayout.Label("pixels", GUILayout.MinWidth(100f));
+					EditorGUILayout.PropertyField(serializedObject.FindProperty("mouseClickThreshold"), new GUIContent("Mouse Click"), GUILayout.Width(120f));
+					GUILayout.Label("pixels");
 					GUILayout.EndHorizontal();
 					EditorGUI.EndDisabledGroup();
 
 					EditorGUI.BeginDisabledGroup(!touch.boolValue);
 					GUILayout.BeginHorizontal();
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("touchDragThreshold"), new GUIContent("Touch Drag"));
-					GUILayout.Label("pixels", GUILayout.MinWidth(100f));
+					EditorGUILayout.PropertyField(serializedObject.FindProperty("touchDragThreshold"), new GUIContent("Touch Drag"), GUILayout.Width(120f));
+					GUILayout.Label("pixels");
 					GUILayout.EndHorizontal();
 
 					GUILayout.BeginHorizontal();
-					EditorGUILayout.PropertyField(serializedObject.FindProperty("touchClickThreshold"), new GUIContent("Touch Tap"));
-					GUILayout.Label("pixels", GUILayout.MinWidth(100f));
+					EditorGUILayout.PropertyField(serializedObject.FindProperty("touchClickThreshold"), new GUIContent("Touch Tap"), GUILayout.Width(120f));
+					GUILayout.Label("pixels");
 					GUILayout.EndHorizontal();
 					EditorGUI.EndDisabledGroup();
 				}

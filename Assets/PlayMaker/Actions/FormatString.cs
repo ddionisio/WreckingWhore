@@ -55,6 +55,7 @@ namespace HutongGames.PlayMaker.Actions
         {
             for (var i = 0; i < variables.Length; i++)
             {
+				variables[i].UpdateValue();
                 objectArray[i] = variables[i].GetValue();
             } 
             

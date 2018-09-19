@@ -12,6 +12,6 @@ class tk2dSpriteMaterialOverrideEditor : tk2dSpriteEditor {
 
         sprite.material = (Material)EditorGUILayout.ObjectField("Material", sprite.material, typeof(Material), false);
 
-        sprite.renderer.material = sprite.material;
+        sprite.GetComponent<Renderer>().material = sprite.material;
     }
 }

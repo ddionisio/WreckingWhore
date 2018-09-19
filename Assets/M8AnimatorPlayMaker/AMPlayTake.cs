@@ -3,21 +3,21 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Animator")]
-    [Tooltip("Play a take from the animator timeline.")]
+    [HutongGames.PlayMaker.Tooltip("Play a take from the animator timeline.")]
     public class AMPlayTake : FsmStateAction {
         [RequiredField]
-        [Tooltip("The Game Object to work with. NOTE: The Game Object must have an AnimatorData component attached.")]
+        [HutongGames.PlayMaker.Tooltip("The Game Object to work with. NOTE: The Game Object must have an AnimatorData component attached.")]
         [CheckForComponent(typeof(AnimatorData))]
         public FsmOwnerDefault gameObject;
 
         public FsmString take;
 
-        [Tooltip("Wait for animation to finish before completing this action. Be careful when setting this to true, certain animations loop forever. Also, this is ignored if loop is set to true.")]
+        [HutongGames.PlayMaker.Tooltip("Wait for animation to finish before completing this action. Be careful when setting this to true, certain animations loop forever. Also, this is ignored if loop is set to true.")]
         public FsmBool waitForComplete;
 
         public FsmEvent waitForCompleteEvent;
 
-        [Tooltip("Override take's loop count to be infinite. If this is true, waitForComplete is ignored and this action will complete.")]
+        [HutongGames.PlayMaker.Tooltip("Override take's loop count to be infinite. If this is true, waitForComplete is ignored and this action will complete.")]
         public FsmBool loop;
 
         [UIHint(UIHint.Variable)]

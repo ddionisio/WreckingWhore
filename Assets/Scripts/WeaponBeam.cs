@@ -137,21 +137,21 @@ public class WeaponBeam : Weapon {
             SetBeamWidth(len);
 
             if(!mOwnerCtrl.isGrounded || mDir == Dir.Down) {
-                Vector3 vel = mOwnerCtrl.rigidbody.velocity;
+                Vector3 vel = mOwnerCtrl.GetComponent<Rigidbody>().velocity;
                 float spdSqr = vel.sqrMagnitude;
                 if(spdSqr > speedCap * speedCap) {
-                    mOwnerCtrl.rigidbody.velocity = (vel / Mathf.Sqrt(spdSqr)) * speedCap;
+                    mOwnerCtrl.GetComponent<Rigidbody>().velocity = (vel / Mathf.Sqrt(spdSqr)) * speedCap;
                 }
 
                 if(mOwnerCtrl.isGrounded)
-                    mOwnerCtrl.rigidbody.drag = 0;
+                    mOwnerCtrl.GetComponent<Rigidbody>().drag = 0;
 
                 Vector3 edgePos = particleEdge.transform.position;
                 Vector3 edgeNPos = beamHolder.position + mBeamDir * len;
                 edgeNPos.z = edgePos.z;
                 particleEdge.transform.position = edgeNPos;
 
-                mOwnerCtrl.rigidbody.AddForce(-mBeamDir * forceBack);
+                mOwnerCtrl.GetComponent<Rigidbody>().AddForce(-mBeamDir * forceBack);
             }
         }
         else {

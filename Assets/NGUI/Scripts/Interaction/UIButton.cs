@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -20,10 +20,34 @@ public class UIButton : UIButtonColor
 	static public UIButton current;
 
 	/// <summary>
-	/// Color that will be applied when the button is disabled.
+	/// Whether the button will highlight when you drag something over it.
 	/// </summary>
 
-	public Color disabledColor = Color.grey;
+	public bool dragHighlight = false;
+
+	/// <summary>
+	/// Name of the hover state sprite.
+	/// </summary>
+
+	public string hoverSprite;
+
+	/// <summary>
+	/// Name of the pressed sprite.
+	/// </summary>
+
+	public string pressedSprite;
+
+	/// <summary>
+	/// Name of the disabled sprite.
+	/// </summary>
+
+	public string disabledSprite;
+
+	/// <summary>
+	/// Whether the sprite changes will elicit a call to MakePixelPerfect() or not.
+	/// </summary>
+
+	public bool pixelSnap = true;
 
 	/// <summary>
 	/// Click event listener.
@@ -31,37 +55,113 @@ public class UIButton : UIButtonColor
 
 	public List<EventDelegate> onClick = new List<EventDelegate>();
 
+	// Cached value
+	string mNormalSprite;
+	UISprite mSprite;
+
+	/// <summary>
+	/// Whether the button should be enabled.
+	/// </summary>
+
+	public override bool isEnabled
+	{
+		get
+		{
+			if (!enabled) return false;
+			Collider col = GetComponent<Collider>();
+			return col && col.enabled;
+		}
+		set
+		{
+			Collider col = GetComponent<Collider>();
+
+			if (col != null)
+			{
+				col.enabled = value;
+				SetState(value ? State.Normal : State.Disabled, false);
+			}
+			else enabled = value;
+		}
+	}
+
+	/// <summary>
+	/// Convenience function that changes the normal sprite.
+	/// </summary>
+
+	public string normalSprite
+	{
+		get
+		{
+			if (!mInitDone) OnInit();
+			return mNormalSprite;
+		}
+		set
+		{
+			mNormalSprite = value;
+			if (mState == State.Normal) SetSprite(value);
+		}
+	}
+
+	/// <summary>
+	/// Cache the sprite we'll be working with.
+	/// </summary>
+
+	protected override void OnInit ()
+	{
+		base.OnInit();
+		mSprite = (mWidget as UISprite);
+		if (mSprite != null) mNormalSprite = mSprite.spriteName;
+	}
+
+	/// <summary>
+	/// Set the initial state.
+	/// </summary>
+
 	protected override void OnEnable ()
 	{
-		//Collider col = collider;
-		//if (col != null) col.enabled = true;
-
 		if (isEnabled)
 		{
-			if (mStarted)
+			if (mInitDone)
 			{
-				if (mHighlighted) base.OnEnable();
-				else UpdateColor(true, false);
+				if (UICamera.currentScheme == UICamera.ControlScheme.Controller)
+				{
+					OnHover(UICamera.selectedObject == gameObject);
+				}
+				else if (UICamera.currentScheme == UICamera.ControlScheme.Mouse)
+				{
+					OnHover(UICamera.hoveredObject == gameObject);
+				}
+				else SetState(State.Normal, false);
 			}
 		}
-		else UpdateColor(false, true);
+		else SetState(State.Disabled, true);
 	}
 
-	protected override void OnDisable()
+	/// <summary>
+	/// Drag over state logic is a bit different for the button.
+	/// </summary>
+	
+	protected override void OnDragOver ()
 	{
-		//Collider col = collider;
-		//if (col != null) col.enabled = false;
-		if (mStarted) UpdateColor(false, false);
+		if (isEnabled && (dragHighlight || UICamera.currentTouch.pressed == gameObject))
+			base.OnDragOver();
 	}
 
-	public override void OnHover (bool isOver) { if (isEnabled) base.OnHover(isOver); }
-	public override void OnPress (bool isPressed) { if (isEnabled) base.OnPress(isPressed); }
+	/// <summary>
+	/// Drag out state logic is a bit different for the button.
+	/// </summary>
+	
+	protected override void OnDragOut ()
+	{
+		if (isEnabled && (dragHighlight || UICamera.currentTouch.pressed == gameObject))
+			base.OnDragOut();
+	}
 
 	/// <summary>
 	/// Call the listener function.
 	/// </summary>
 
-	void OnClick ()
+	protected virtual void OnClick ()
 	{
 		if (isEnabled)
 		{
@@ -72,47 +172,32 @@ public class UIButton : UIButtonColor
 	}
 
 	/// <summary>
-	/// Whether the button should be enabled.
+	/// Change the visual state.
 	/// </summary>
 
-	public bool isEnabled
+	protected override void SetState (State state, bool immediate)
 	{
-		get
+		base.SetState(state, immediate);
+
+		switch (state)
 		{
-			if (!enabled) return false;
-			Collider col = collider;
-			return col && col.enabled;
-		}
-		set
-		{
-			Collider col = collider;
-			if (col != null) col.enabled = value;
-			enabled = value;
+			case State.Normal: SetSprite(mNormalSprite); break;
+			case State.Hover: SetSprite(hoverSprite); break;
+			case State.Pressed: SetSprite(pressedSprite); break;
+			case State.Disabled: SetSprite(disabledSprite); break;
 		}
 	}
 
 	/// <summary>
-	/// Update the button's color to either enabled or disabled state.
+	/// Convenience function that changes the sprite.
 	/// </summary>
 
-	public void UpdateColor (bool shouldBeEnabled, bool immediate)
+	protected void SetSprite (string sp)
 	{
-		if (tweenTarget)
+		if (mSprite != null && !string.IsNullOrEmpty(sp))
 		{
-			if (!mStarted)
-			{
-				mStarted = true;
-				Init();
-			}
-
-			Color c = shouldBeEnabled ? defaultColor : disabledColor;
-			TweenColor tc = TweenColor.Begin(tweenTarget, 0.15f, c);
-
-			if (immediate)
-			{
-				tc.color = c;
-				tc.enabled = false;
-			}
+			mSprite.spriteName = sp;
+			if (pixelSnap) mSprite.MakePixelPerfect();
 		}
 	}
 }

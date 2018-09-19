@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Pool")]
-    [Tooltip("Spawn a game object from pool")]
+    [HutongGames.PlayMaker.Tooltip("Spawn a game object from pool")]
     public class PoolSpawn : FsmStateAction {
         [RequiredField]
         public FsmString group;

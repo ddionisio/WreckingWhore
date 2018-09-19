@@ -24,7 +24,7 @@ public class TransLookAtUpLock : MonoBehaviour {
     
     // Update is called once per frame
     void Update() {
-        if(!visibleCheck || source.renderer.isVisible) {
+        if(!visibleCheck || source.GetComponent<Renderer>().isVisible) {
             float angle = M8.MathUtil.AngleForwardAxis(
                 source.worldToLocalMatrix,
                 source.position,

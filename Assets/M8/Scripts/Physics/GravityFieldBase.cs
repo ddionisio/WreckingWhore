@@ -44,19 +44,19 @@ public abstract class GravityFieldBase : MonoBehaviour {
     public static GravityFieldBase global { get { return mGlobal; } }
 
     public void Add(GravityController ctrl) {
-        if(!mItems.ContainsKey(ctrl.collider) && ctrl.rigidbody != null && !ctrl.rigidbody.isKinematic) {
+        if(!mItems.ContainsKey(ctrl.GetComponent<Collider>()) && ctrl.GetComponent<Rigidbody>() != null && !ctrl.GetComponent<Rigidbody>().isKinematic) {
             if(ctrl.gravityField != null) { //another field holds the item, transfer ownership
-                ItemData item = ctrl.gravityField.RemoveItem(ctrl.collider, false);
+                ItemData item = ctrl.gravityField.RemoveItem(ctrl.GetComponent<Collider>(), false);
                 if(item.controller != null) {//invalid for some reason?
 
-                    mItems.Add(ctrl.collider, item);
+                    mItems.Add(ctrl.GetComponent<Collider>(), item);
                     if(!mIsProcessing) StartCoroutine(DoEval());
 
                     ctrl.gravityField = this;
                 }
             }
             else {
-                mItems.Add(ctrl.collider, new ItemData(ctrl));
+                mItems.Add(ctrl.GetComponent<Collider>(), new ItemData(ctrl));
                 if(!mIsProcessing) StartCoroutine(DoEval());
                 ctrl.gravityField = this;
             }

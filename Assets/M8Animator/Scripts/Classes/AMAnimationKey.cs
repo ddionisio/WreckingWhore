@@ -67,7 +67,7 @@ public class AMAnimationKey : AMKey {
 
     #region action
     void OnMethodCallbackParams(TweenEvent dat) {
-        if(obj != null && obj.animation != null && amClip != null) {
+        if(obj != null && obj.GetComponent<Animation>() != null && amClip != null) {
             float elapsed = dat.tween.elapsed;
             float frameRate = (float)dat.parms[0];
             float curFrame = frameRate * elapsed;
@@ -75,7 +75,7 @@ public class AMAnimationKey : AMKey {
 
             if(numFrames > 0.0f && curFrame > frame + numFrames) return;
 
-            Animation anm = obj.animation;
+            Animation anm = obj.GetComponent<Animation>();
 
             if(wrapMode != WrapMode.Default)
                 anm.wrapMode = wrapMode;

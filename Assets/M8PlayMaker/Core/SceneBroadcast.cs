@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Scene")]
-    [Tooltip("Do a broadcast to all objects in the scene hierarchy.")]
+    [HutongGames.PlayMaker.Tooltip("Do a broadcast to all objects in the scene hierarchy.")]
     public class SceneBroadcast : FsmStateAction {
         [RequiredField]
         public FsmString func;

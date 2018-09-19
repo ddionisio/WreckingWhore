@@ -35,7 +35,7 @@ public class ForceField : MonoBehaviour {
     private HashSet<Rigidbody> mBodies = new HashSet<Rigidbody>();
 
     void OnTriggerEnter(Collider t) {
-        Rigidbody body = t.rigidbody;
+        Rigidbody body = t.GetComponent<Rigidbody>();
         if(body != null && !mBodies.Contains(body)) {
             if(impulse != 0.0f) {
                 Vector3 dir = Vector3.zero;
@@ -71,7 +71,7 @@ public class ForceField : MonoBehaviour {
     }
 
     void OnTriggerExit(Collider t) {
-        Rigidbody body = t.rigidbody;
+        Rigidbody body = t.GetComponent<Rigidbody>();
         if(body != null) {
             mBodies.Remove(body);
         }

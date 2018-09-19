@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate FSM")]
-    [Tooltip("Check if the last event matches given event.")]
+    [HutongGames.PlayMaker.Tooltip("Check if the last event matches given event.")]
     public class CheckLastFSMEvent : FsmStateAction {
         [RequiredField]
         public FsmEvent checkEvent;

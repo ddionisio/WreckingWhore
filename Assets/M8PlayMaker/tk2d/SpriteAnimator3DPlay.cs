@@ -3,11 +3,11 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate tk2D")]
-    [Tooltip("Play a clip.")]
+    [HutongGames.PlayMaker.Tooltip("Play a clip.")]
     public class SpriteAnimator3DPlay : FSMActionComponentBase<SpriteAnimator3D> {
 
         [RequiredField]
-        [Tooltip("The clip name to play")]
+        [HutongGames.PlayMaker.Tooltip("The clip name to play")]
         public FsmString clipName;
 
         public override void Reset() {

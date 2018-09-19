@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 //only for 2D stuff
 Shader "M8/2D/RepeatTileAdditive" 
 {
@@ -47,7 +49,7 @@ Shader "M8/2D/RepeatTileAdditive"
 			{
 				Output o;
 				
-				o.vertex = mul(UNITY_MATRIX_MVP, IN.vertex);
+				o.vertex = UnityObjectToClipPos(IN.vertex);
 				o.color = IN.color;
 				
 				o.texcoord = IN.texcoord;

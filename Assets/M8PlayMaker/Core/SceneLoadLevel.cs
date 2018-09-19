@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Scene")]
-    [Tooltip("Load a scene by level index.")]
+    [HutongGames.PlayMaker.Tooltip("Load a scene by level index.")]
     public class SceneLoadLevel : FsmStateAction {
         [RequiredField]
         public FsmInt level;

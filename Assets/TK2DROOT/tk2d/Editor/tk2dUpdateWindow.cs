@@ -38,8 +38,7 @@ public class tk2dUpdateWindow : EditorWindow
 
 	void OnGUI()
 	{
-		if (EditorUserBuildSettings.activeBuildTarget == BuildTarget.WebPlayer || 
-			EditorUserBuildSettings.activeBuildTarget == BuildTarget.WebPlayerStreamed) {
+		if (EditorUserBuildSettings.activeBuildTarget == BuildTarget.WebGL) {
 			GUILayout.Label(platformError);
 
 			GUILayout.Space(25);

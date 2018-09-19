@@ -141,7 +141,7 @@ public class SpriteAnimator3D : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         //determine dir
-        if(mCurClip != -1 && anim.Sprite.renderer.isVisible) {
+        if(mCurClip != -1 && anim.Sprite.GetComponent<Renderer>().isVisible) {
             int newDir = GetDir();
             if(mCurDir != newDir) {
                 mCurDir = newDir;

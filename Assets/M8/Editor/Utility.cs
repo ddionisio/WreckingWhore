@@ -127,7 +127,7 @@ namespace M8.Editor {
 
             //EditorGUIUtility.LookLikeControls(0, 50);
 
-            bool enterPressed = Event.current.type == EventType.keyDown && Event.current.keyCode == KeyCode.Return;
+            bool enterPressed = Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Return;
 
             GUILayout.Label("count", GUILayout.MaxWidth(50));
 

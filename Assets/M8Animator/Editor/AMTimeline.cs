@@ -744,10 +744,10 @@ public class AMTimeline : EditorWindow {
         #endregion
         #region drag logic events
         bool wasDragging = false;
-        if(e.type == EventType.mouseDrag && EditorWindow.mouseOverWindow == this) {
+        if(e.type == EventType.MouseDrag && EditorWindow.mouseOverWindow == this) {
             isDragging = true;
         }
-        else if((dragType == (int)DragType.CursorZoom && EditorWindow.mouseOverWindow != this) || e.type == EventType.mouseUp || /*EditorWindow.mouseOverWindow!=this*/Event.current.rawType == EventType.MouseUp /*|| e.mousePosition.y < 0f*/) {
+        else if((dragType == (int)DragType.CursorZoom && EditorWindow.mouseOverWindow != this) || e.type == EventType.MouseUp || /*EditorWindow.mouseOverWindow!=this*/Event.current.rawType == EventType.MouseUp /*|| e.mousePosition.y < 0f*/) {
             if(isDragging) {
                 wasDragging = true;
                 isDragging = false;
@@ -767,8 +767,8 @@ public class AMTimeline : EditorWindow {
         // check if control or shift are down
         isControlDown = e.control || e.command;
         isShiftDown = e.shift;
-        if(e.type == EventType.keyDown && e.keyCode == KeyCode.Space) isSpaceBarDown = true;
-        else if(e.type == EventType.keyUp && e.keyCode == KeyCode.Space) isSpaceBarDown = false;
+        if(e.type == EventType.KeyDown && e.keyCode == KeyCode.Space) isSpaceBarDown = true;
+        else if(e.type == EventType.KeyUp && e.keyCode == KeyCode.Space) isSpaceBarDown = false;
         #endregion
         #region set cursor
         int customCursor = (int)CursorType.None;
@@ -815,8 +815,8 @@ public class AMTimeline : EditorWindow {
             cursorHand = false;
             cursorZoom = false;
         }
-        if(Screen.showCursor != showCursor) {
-            Screen.showCursor = showCursor;
+        if(Cursor.visible != showCursor) {
+            Cursor.visible = showCursor;
         }
         if(isRenamingTake || isRenamingTrack != -1 || isRenamingGroup < 0) EditorGUIUtility.AddCursorRect(rectWindow, MouseCursor.Text);
         else if(dragType == (int)DragType.TimeScrub || dragType == (int)DragType.FrameScrub || dragType == (int)DragType.MoveSelection) EditorGUIUtility.AddCursorRect(rectWindow, MouseCursor.SlideArrow);
@@ -3302,9 +3302,6 @@ public class AMTimeline : EditorWindow {
             else if(t == typeof(MeshCollider)) { if(parameter.setObject(EditorGUI.ObjectField(rectObjectField, parameter.val_obj, typeof(MeshCollider), true))) saveChanges = true; }
             else if(t == typeof(WheelCollider)) { if(parameter.setObject(EditorGUI.ObjectField(rectObjectField, parameter.val_obj, typeof(WheelCollider), true))) saveChanges = true; }
             else if(t == typeof(TerrainCollider)) { if(parameter.setObject(EditorGUI.ObjectField(rectObjectField, parameter.val_obj, typeof(TerrainCollider), true))) saveChanges = true; }
-            else if(t == typeof(InteractiveCloth)) { if(parameter.setObject(EditorGUI.ObjectField(rectObjectField, parameter.val_obj, typeof(InteractiveCloth), true))) saveChanges = true; }
-            else if(t == typeof(SkinnedCloth)) { if(parameter.setObject(EditorGUI.ObjectField(rectObjectField, parameter.val_obj, typeof(SkinnedCloth), true))) saveChanges = true; }
-            else if(t == typeof(ClothRenderer)) { if(parameter.setObject(EditorGUI.ObjectField(rectObjectField, parameter.val_obj, typeof(ClothRenderer), true))) saveChanges = true; }
             else if(t == typeof(HingeJoint)) { if(parameter.setObject(EditorGUI.ObjectField(rectObjectField, parameter.val_obj, typeof(HingeJoint), true))) saveChanges = true; }
             else if(t == typeof(FixedJoint)) { if(parameter.setObject(EditorGUI.ObjectField(rectObjectField, parameter.val_obj, typeof(FixedJoint), true))) saveChanges = true; }
             else if(t == typeof(SpringJoint)) { if(parameter.setObject(EditorGUI.ObjectField(rectObjectField, parameter.val_obj, typeof(SpringJoint), true))) saveChanges = true; }
@@ -3334,7 +3331,6 @@ public class AMTimeline : EditorWindow {
             else if(t == typeof(GUITexture)) { if(parameter.setObject(EditorGUI.ObjectField(rectObjectField, parameter.val_obj, typeof(GUITexture), true))) saveChanges = true; }
             else if(t == typeof(GUIText)) { if(parameter.setObject(EditorGUI.ObjectField(rectObjectField, parameter.val_obj, typeof(GUIText), true))) saveChanges = true; }
             else if(t == typeof(Animation)) { if(parameter.setObject(EditorGUI.ObjectField(rectObjectField, parameter.val_obj, typeof(Animation), true))) saveChanges = true; }
-            else if(t == typeof(NetworkView)) { if(parameter.setObject(EditorGUI.ObjectField(rectObjectField, parameter.val_obj, typeof(NetworkView), true))) saveChanges = true; }
             // wind zone
             else {
 
@@ -3404,7 +3400,7 @@ public class AMTimeline : EditorWindow {
             if((amTrack as AMAnimationTrack).setObject((GameObject)EditorGUI.ObjectField(rect, (amTrack as AMAnimationTrack).obj, typeof(GameObject), true))) {
                 //Animation _temp = (Animation)(amTrack as AMAnimationTrack).obj.GetComponent("Animation");
                 if((amTrack as AMAnimationTrack).obj != null) {
-                    if((amTrack as AMAnimationTrack).obj.animation == null) {
+                    if((amTrack as AMAnimationTrack).obj.GetComponent<Animation>() == null) {
                         (amTrack as AMAnimationTrack).obj = null;
                         EditorUtility.DisplayDialog("No Animation Component", "You must add an Animation component to the GameObject before you can use it in an Animation Track.", "Okay");
                     }
@@ -4576,7 +4572,7 @@ public class AMTimeline : EditorWindow {
                 return;
             }
             // add key to animation track
-            newKey = (amTrack as AMAnimationTrack).addKey(_frame, (amTrack as AMAnimationTrack).obj.animation.clip, WrapMode.Once);
+            newKey = (amTrack as AMAnimationTrack).addKey(_frame, (amTrack as AMAnimationTrack).obj.GetComponent<Animation>().clip, WrapMode.Once);
         }
         else if(amTrack is AMAudioTrack) {
             // audio

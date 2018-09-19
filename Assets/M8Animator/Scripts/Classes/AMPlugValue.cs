@@ -71,6 +71,10 @@ public class AMPlugDouble : ABSTweenPlugin {
         }
     }
 
+    protected override void SetIncrementalRestart() {
+        
+    }
+
     protected override void SetIncremental(int p_diffIncr) {
         typedStartVal += changeVal * p_diffIncr;
     }
@@ -146,6 +150,10 @@ public class AMPlugLong : ABSTweenPlugin {
         else {
             changeVal = typedEndVal - typedStartVal;
         }
+    }
+
+    protected override void SetIncrementalRestart() {
+
     }
 
     protected override void SetIncremental(int p_diffIncr) {

@@ -45,7 +45,7 @@ public class ComboBox
 
         switch( Event.current.GetTypeForControl(controlID) )
         {
-            case EventType.mouseUp:
+            case EventType.MouseUp:
             {
                 if( isClickedComboButton )
                 {

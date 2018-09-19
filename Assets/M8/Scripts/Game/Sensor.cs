@@ -19,11 +19,11 @@ public abstract class Sensor<T> : MonoBehaviour where T : Component {
     }
 	
 	protected virtual void OnEnable() {
-		collider.enabled = true;
+		GetComponent<Collider>().enabled = true;
 	}
 
     protected virtual void OnDisable() {
-		collider.enabled = false;
+		GetComponent<Collider>().enabled = false;
 	}
 			
 	void OnTriggerEnter(Collider other) {

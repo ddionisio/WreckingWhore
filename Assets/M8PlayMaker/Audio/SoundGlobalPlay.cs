@@ -9,7 +9,7 @@ namespace M8.PlayMaker {
 
         public FsmBool wait;
 
-        [Tooltip("If set, wait for sound to end before finishing, then enter event. Make sure to set wait to true")]
+        [HutongGames.PlayMaker.Tooltip("If set, wait for sound to end before finishing, then enter event. Make sure to set wait to true")]
         public FsmEvent onEndEvent;
 
         public override void Reset() {

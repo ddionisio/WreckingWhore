@@ -27,8 +27,8 @@ public class TransStretchTo : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if(target) {
-            Vector3 apos = anchor ? anchorColliderCenter && anchor.collider ? anchor.collider.bounds.center : anchor.position : transform.position;
-            Vector3 pos = colliderCenter && target.collider ? target.collider.bounds.center : target.position;
+            Vector3 apos = anchor ? anchorColliderCenter && anchor.GetComponent<Collider>() ? anchor.GetComponent<Collider>().bounds.center : anchor.position : transform.position;
+            Vector3 pos = colliderCenter && target.GetComponent<Collider>() ? target.GetComponent<Collider>().bounds.center : target.position;
 
             Vector3 d = pos - apos;
 

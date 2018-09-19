@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Scene")]
-    [Tooltip("Load a new scene by name.")]
+    [HutongGames.PlayMaker.Tooltip("Load a new scene by name.")]
     public class SceneLoad : FsmStateAction {
         [RequiredField]
         public FsmString scene;

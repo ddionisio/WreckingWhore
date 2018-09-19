@@ -77,7 +77,7 @@ namespace HutongGames.PlayMaker.Actions
 			}
 			
 			_textMesh.font = _font.data;
-			_textMesh.renderer.material = _font.material;
+			_textMesh.GetComponent<Renderer>().material = _font.material;
 			_textMesh.Init(true);
 		}
 		

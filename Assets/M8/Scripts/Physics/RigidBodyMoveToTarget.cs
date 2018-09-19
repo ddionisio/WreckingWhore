@@ -14,8 +14,8 @@ public class RigidBodyMoveToTarget : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if(!Application.isPlaying && target != null) {
-            if(collider != null) {
-                Vector3 ofs = transform.worldToLocalMatrix.MultiplyPoint(collider.bounds.center);
+            if(GetComponent<Collider>() != null) {
+                Vector3 ofs = transform.worldToLocalMatrix.MultiplyPoint(GetComponent<Collider>().bounds.center);
 
                 transform.position = target.localToWorldMatrix.MultiplyPoint(offset - ofs);
             }
@@ -31,16 +31,16 @@ public class RigidBodyMoveToTarget : MonoBehaviour {
     void FixedUpdate() {
         Vector3 newPos;
 
-        if(collider != null) {
-            Vector3 ofs = transform.worldToLocalMatrix.MultiplyPoint(collider.bounds.center);
+        if(GetComponent<Collider>() != null) {
+            Vector3 ofs = transform.worldToLocalMatrix.MultiplyPoint(GetComponent<Collider>().bounds.center);
             newPos = target.localToWorldMatrix.MultiplyPoint(offset - ofs);
         }
         else
             newPos = target.position + target.rotation * offset;
 
         if(transform.position != newPos)
-            rigidbody.MovePosition(newPos);
+            GetComponent<Rigidbody>().MovePosition(newPos);
 
-        rigidbody.MoveRotation(target.rotation);
+        GetComponent<Rigidbody>().MoveRotation(target.rotation);
     }
 }

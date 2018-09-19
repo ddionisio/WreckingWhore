@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate UI")]
-    [Tooltip("Get the current active modal's name. Empty if no modal is active.")]
+    [HutongGames.PlayMaker.Tooltip("Get the current active modal's name. Empty if no modal is active.")]
     public class UIModalGetTop : FsmStateAction {
         [RequiredField]
         [UIHint(UIHint.Variable)]

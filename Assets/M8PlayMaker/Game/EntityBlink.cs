@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Entity")]
-    [Tooltip("Do some blinking. Make sure there are EntitySpriteControllers")]
+    [HutongGames.PlayMaker.Tooltip("Do some blinking. Make sure there are EntitySpriteControllers")]
     public class EntityBlink : FSMActionComponentBase<EntityBase> {
         public FsmEvent finish;
         public FsmFloat delay;

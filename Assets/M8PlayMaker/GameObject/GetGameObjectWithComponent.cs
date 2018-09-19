@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayerMaker.GameObjectLib {
     [ActionCategory("Mate GameObject")]
-    [Tooltip("Gets the game object that has the given component. If the source has the component, that is returned, otherwise will try to find the first game object within the hierarchy that has the component. If nothing is found, output will be set to none.")]
+    [HutongGames.PlayMaker.Tooltip("Gets the game object that has the given component. If the source has the component, that is returned, otherwise will try to find the first game object within the hierarchy that has the component. If nothing is found, output will be set to none.")]
     public class GetGameObjectWithComponent : FsmStateAction {
         [RequiredField]
         public FsmOwnerDefault source;

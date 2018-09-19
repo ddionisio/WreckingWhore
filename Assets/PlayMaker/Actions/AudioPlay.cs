@@ -41,7 +41,7 @@ namespace HutongGames.PlayMaker.Actions
 			{
 				// cache the AudioSource component
 				
-				audio = go.audio;
+				audio = go.GetComponent<AudioSource>();
 				if (audio != null)
 				{
 					var audioClip = oneShotClip.Value as AudioClip;
@@ -89,7 +89,7 @@ namespace HutongGames.PlayMaker.Actions
 					Fsm.Event(finishedEvent);
 					Finish();
 				}
-                else if (volume.Value != audio.volume)
+                else if (!volume.IsNone && volume.Value != audio.volume)
 				{
 					audio.volume = volume.Value;
 				}

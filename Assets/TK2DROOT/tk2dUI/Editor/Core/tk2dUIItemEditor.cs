@@ -23,7 +23,7 @@ public class tk2dUIItemEditor : Editor
         serializedObject.Update();
 
         bool changeOccurred = false;
-        EditorGUIUtility.LookLikeControls(180);
+        tk2dGuiUtility.LookLikeControls(180);
         tk2dUIItem btn = (tk2dUIItem)target;
 
         bool newIsChildOfAnotherMenuBtn = EditorGUILayout.Toggle("Child of Another UIItem?", btn.InternalGetIsChildOfAnotherUIItem());
@@ -45,7 +45,7 @@ public class tk2dUIItemEditor : Editor
         methodBindingUtil.MethodBinding( "On Release", typeof(tk2dUIItem), btn.sendMessageTarget, ref btn.SendMessageOnReleaseMethodName );
         methodBindingUtil.EndMessageGUI();
 
-        if (btn.collider != null) {
+        if (btn.GetComponent<Collider>() != null) {
             GUILayout.Label("Collider", EditorStyles.boldLabel);
             EditorGUI.indentLevel++;
 
@@ -71,7 +71,7 @@ public class tk2dUIItemEditor : Editor
 
     public static void ArrayProperty(string name, SerializedProperty prop) {
         SerializedProperty localProp = prop.Copy();
-        EditorGUIUtility.LookLikeInspector();
+        tk2dGuiUtility.LookLikeInspector();
         if ( EditorGUILayout.PropertyField(localProp, new GUIContent(name)) ) {
             EditorGUI.indentLevel++;
             bool expanded = true;

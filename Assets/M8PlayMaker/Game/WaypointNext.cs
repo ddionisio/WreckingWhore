@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Waypoint")]
-    [Tooltip("Move waypoint to the next.")]
+    [HutongGames.PlayMaker.Tooltip("Move waypoint to the next.")]
     public class WaypointNext : FSMActionComponentBase<WaypointData> {
         public FsmEvent isDone;
 

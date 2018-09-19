@@ -22,7 +22,7 @@ public class TransLookAt : MonoBehaviour {
     }
 
     void Update() {
-        if(!visibleCheck || source.renderer.isVisible) {
+        if(!visibleCheck || source.GetComponent<Renderer>().isVisible) {
             source.rotation = Quaternion.LookRotation(-target.forward, target.up);
         }
     }

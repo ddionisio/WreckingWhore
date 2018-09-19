@@ -32,7 +32,7 @@ public class SpriteProject : MonoBehaviour {
     private RaycastHit mHit;
 
     void OnDisable() {
-        target.renderer.enabled = true;
+        target.GetComponent<Renderer>().enabled = true;
         target.color = mOrigColor;
         target.scale = mOrigScale;
     }
@@ -51,7 +51,7 @@ public class SpriteProject : MonoBehaviour {
         Vector3 dir = source.rotation * sourceAxis;
 
         if(Physics.Raycast(source.position, dir, out mHit, distance, layers)) {
-            target.renderer.enabled = true;
+            target.GetComponent<Renderer>().enabled = true;
 
             target.transform.position = mHit.point + mHit.normal * offset;
             target.transform.forward = -mHit.normal;
@@ -67,7 +67,7 @@ public class SpriteProject : MonoBehaviour {
             }
         }
         else {
-            target.renderer.enabled = false;
+            target.GetComponent<Renderer>().enabled = false;
         }
     }
 }

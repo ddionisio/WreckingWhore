@@ -72,16 +72,16 @@ public class PlatformController : MonoBehaviour {
 #if UNITY_EDITOR
         SetDir();
 #endif
-        Vector3 vel = rigidbody.velocity;// GetPointVelocity(hit.point);
+        Vector3 vel = GetComponent<Rigidbody>().velocity;// GetPointVelocity(hit.point);
 
         if(vel != Vector3.zero) {
             Vector3 wDir = transform.rotation * mDir;
 
-            RaycastHit[] hits = rigidbody.SweepTestAll(wDir, ofs);
+            RaycastHit[] hits = GetComponent<Rigidbody>().SweepTestAll(wDir, ofs);
 
             foreach(RaycastHit hit in hits) {
                 GameObject go = hit.collider.gameObject;
-                Rigidbody body = go.rigidbody;
+                Rigidbody body = go.GetComponent<Rigidbody>();
                 //Vector3 up = go.transform.up;
 
                 if(((1 << go.layer) & layerMask) != 0 && CheckTags(go) && (!upDirLimitEnabled || Vector3.Angle(wDir, hit.transform.up) <= upDirLimit)) {// && Vector3.Angle(up, hit.normal) >= normalAngleDiff) {

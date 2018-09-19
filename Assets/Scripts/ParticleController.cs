@@ -7,30 +7,30 @@ public class ParticleController : MonoBehaviour {
     private bool mStarted;
 
     public void Play() {
-        particleSystem.Play();
+        GetComponent<ParticleSystem>().Play();
     }
 
     public void Stop() {
-        particleSystem.Stop();
+        GetComponent<ParticleSystem>().Stop();
     }
 
     public void Pause() {
-        particleSystem.Pause();
+        GetComponent<ParticleSystem>().Pause();
     }
 
     public void SetLoop(bool loop) {
-        particleSystem.loop = loop;
+        GetComponent<ParticleSystem>().loop = loop;
     }
 
     void OnEnable() {
         if(mStarted && playOnEnable)
-            particleSystem.Play();
+            GetComponent<ParticleSystem>().Play();
     }
 
     void Start() {
         mStarted = true;
 
         if(playOnEnable)
-            particleSystem.Play();
+            GetComponent<ParticleSystem>().Play();
     }
 }

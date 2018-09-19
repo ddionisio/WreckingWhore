@@ -15,13 +15,13 @@ public abstract class SensorSingle<T> : MonoBehaviour where T : Component {
     protected virtual void UnitExit(T unit) { }
 
     void OnEnable() {
-        if(collider != null)
-            collider.enabled = true;
+        if(GetComponent<Collider>() != null)
+            GetComponent<Collider>().enabled = true;
     }
 
     void OnDisable() {
-        if(collider != null)
-            collider.enabled = false;
+        if(GetComponent<Collider>() != null)
+            GetComponent<Collider>().enabled = false;
     }
 
     void OnTriggerEnter(Collider other) {

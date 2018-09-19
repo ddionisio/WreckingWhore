@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate UI")]
-    [Tooltip("Check if given UI is currently open.")]
+    [HutongGames.PlayMaker.Tooltip("Check if given UI is currently open.")]
     public class UIModalIsOpen : FsmStateAction {
         public FsmString modal;
 

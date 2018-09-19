@@ -257,7 +257,7 @@ public class RigidBodyController : MonoBehaviour {
 
             ContactPoint contact = col.contacts[i];
 
-            Collider whichColl = contact.thisCollider != collider ? contact.thisCollider : contact.otherCollider;
+            Collider whichColl = contact.thisCollider != GetComponent<Collider>() ? contact.thisCollider : contact.otherCollider;
 
             CollideInfo newInfo = mColls[mCollCount];
 
@@ -309,8 +309,8 @@ public class RigidBodyController : MonoBehaviour {
     void OnCollisionExit(Collision col) {
         //Debug.Log("exit: " + col.gameObject.name);
 
-        foreach(ContactPoint contact in col.contacts) {
-            Collider whichColl = contact.thisCollider != collider ? contact.thisCollider : contact.otherCollider;
+        /*foreach(ContactPoint contact in col.contacts) {
+            Collider whichColl = contact.thisCollider != GetComponent<Collider>() ? contact.thisCollider : contact.otherCollider;
             Vector3 n = contact.normal;
 
             for(int i = 0; i < mCollCount; i++) {
@@ -320,7 +320,15 @@ public class RigidBodyController : MonoBehaviour {
                     break;
                 }
             }
+        }*/
+        for(int i = 0; i < mCollCount; i++) {
+            CollideInfo inf = mColls[i];
+            if(inf.collider == col.collider) {
+                RemoveColl(i);
+                break;
+            }
         }
+        //GenerateColls(col);
 
         RefreshCollInfo();
     }
@@ -391,11 +399,11 @@ public class RigidBodyController : MonoBehaviour {
         mSlopLimitCos = Mathf.Cos(slopLimit * Mathf.Deg2Rad);
         mAboveLimitCos = Mathf.Cos(aboveLimit * Mathf.Deg2Rad);
 
-        if(collider != null) {
-            if(collider is SphereCollider)
-                mRadius = ((SphereCollider)collider).radius;
-            else if(collider is CapsuleCollider) {
-                mCapsuleColl = collider as CapsuleCollider;
+        if(GetComponent<Collider>() != null) {
+            if(GetComponent<Collider>() is SphereCollider)
+                mRadius = ((SphereCollider)GetComponent<Collider>()).radius;
+            else if(GetComponent<Collider>() is CapsuleCollider) {
+                mCapsuleColl = GetComponent<Collider>() as CapsuleCollider;
                 mRadius = mCapsuleColl.radius;
             }
         }
@@ -418,20 +426,20 @@ public class RigidBodyController : MonoBehaviour {
 
             Vector3 dir = M8.MathUtil.Slide(-transform.up, mSlopNormal);
             dir.Normalize();
-            rigidbody.AddForce(dir * slopSlideForce);
+            GetComponent<Rigidbody>().AddForce(dir * slopSlideForce);
         }
 
         if(mCurMoveAxis != Vector2.zero) {
             //move
             if(isGrounded) {
                 if(!mLockDrag)
-                    rigidbody.drag = isUnderWater ? waterDrag : groundDrag;
+                    GetComponent<Rigidbody>().drag = isUnderWater ? waterDrag : groundDrag;
 
                 Move(dirHolder.rotation, Vector3.forward, Vector3.right, mCurMoveAxis, moveForce);
             }
             else {
                 if(!mLockDrag)
-                    rigidbody.drag = isUnderWater ? waterDrag : airDrag;
+                    GetComponent<Rigidbody>().drag = isUnderWater ? waterDrag : airDrag;
 
                 Move(dirHolder.rotation, Vector3.forward, Vector3.right, mCurMoveAxis, moveAirForce);
             }
@@ -440,7 +448,7 @@ public class RigidBodyController : MonoBehaviour {
             mCurMoveDir = Vector3.zero;
 
             if(!mLockDrag)
-                rigidbody.drag = isUnderWater ? waterDrag : isGrounded && !mIsSlopSlide ? (standDragLayer & mCollGroundLayerMask) == 0 ? groundDrag : standDrag : airDrag;
+                GetComponent<Rigidbody>().drag = isUnderWater ? waterDrag : isGrounded && !mIsSlopSlide ? (standDragLayer & mCollGroundLayerMask) == 0 ? groundDrag : standDrag : airDrag;
         }
     }
 
@@ -498,7 +506,7 @@ public class RigidBodyController : MonoBehaviour {
 
         if(canMove) {
             //M8.Debug.
-            rigidbody.AddForce(moveDelta * force);
+            GetComponent<Rigidbody>().AddForce(moveDelta * force);
             return true;
         }
 
@@ -506,14 +514,14 @@ public class RigidBodyController : MonoBehaviour {
     }
 
     protected virtual bool CanMove(Vector3 dir, float maxSpeed) {
-        Vector3 vel = rigidbody.velocity - mGroundMoveVel;
+        Vector3 vel = GetComponent<Rigidbody>().velocity - mGroundMoveVel;
         float sqrMag = vel.sqrMagnitude;
 
         bool ret = sqrMag < maxSpeed * maxSpeed;
 
         //see if we are trying to move the opposite dir
         if(!ret) { //see if we are trying to move the opposite dir
-            Vector3 velDir = rigidbody.velocity.normalized;
+            Vector3 velDir = GetComponent<Rigidbody>().velocity.normalized;
             ret = Vector3.Dot(dir, velDir) < moveCosCheck;
         }
 
@@ -560,7 +568,7 @@ public class RigidBodyController : MonoBehaviour {
                 }
 
                 //for platforms
-                Rigidbody body = inf.collider.rigidbody;
+                Rigidbody body = inf.collider.GetComponent<Rigidbody>();
                 if(body != null) {
                     mGroundMoveVel += body.velocity;
                 }
@@ -571,6 +579,6 @@ public class RigidBodyController : MonoBehaviour {
     }
 
     protected void ComputeLocalVelocity() {
-        mLocalVelocity = dirHolder.worldToLocalMatrix.MultiplyVector(rigidbody.velocity);
+        mLocalVelocity = dirHolder.worldToLocalMatrix.MultiplyVector(GetComponent<Rigidbody>().velocity);
     }
 }

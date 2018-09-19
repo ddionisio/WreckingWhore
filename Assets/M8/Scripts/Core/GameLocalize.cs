@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using SimpleJSON;
 
 [AddComponentMenu("M8/Core/GameLocalize")]
 public class GameLocalize : MonoBehaviour {
@@ -93,8 +94,25 @@ public class GameLocalize : MonoBehaviour {
 
         TableData dat = tables[langInd];
 
-        fastJSON.JSON.Instance.Parameters.UseExtensions = false;
-        List<Entry> tableEntries = fastJSON.JSON.Instance.ToObject<List<Entry>>(dat.file.text);
+        List<Entry> tableEntries = new List<Entry>();
+
+        var json = JSON.Parse(dat.file.text).AsArray;
+        foreach(var node in json) {
+            var entryNode = node.Value;
+            var key = entryNode["key"].Value;
+            var text = entryNode["text"].Value;
+            string[] parm;
+            if(entryNode["param"] != null) {
+                var parmArray = entryNode["param"].AsArray;
+                parm = new string[parmArray.Count];
+                for(int i = 0; i < parmArray.Count; i++)
+                    parm[i] = parmArray[i].Value;
+            }
+            else
+                parm = new string[0];
+
+            tableEntries.Add(new Entry() { key = key, text = text, param = parm });
+        }
 
         mTable = new Dictionary<string, string>(tableEntries.Count);
         mTableParams = new Dictionary<string, string[]>(tableEntries.Count);
@@ -116,7 +134,25 @@ public class GameLocalize : MonoBehaviour {
         }
 
         if(platform != null) {
-            List<Entry> platformEntries = fastJSON.JSON.Instance.ToObject<List<Entry>>(platform.file.text);
+            List<Entry> platformEntries = new List<Entry>();
+
+            var platformJson = JSON.Parse(platform.file.text).AsArray;
+            foreach(var node in platformJson) {
+                var entryNode = node.Value;
+                var key = entryNode["key"].Value;
+                var text = entryNode["text"].Value;
+                string[] parm;
+                if(entryNode["param"] != null) {
+                    var parmArray = entryNode["param"].AsArray;
+                    parm = new string[parmArray.Count];
+                    for(int i = 0; i < parmArray.Count; i++)
+                        parm[i] = parmArray[i].Value;
+                }
+                else
+                    parm = new string[0];
+
+                platformEntries.Add(new Entry() { key = key, text = text, param = parm });
+            }
 
             foreach(Entry platformEntry in platformEntries) {
                 if(mTable.ContainsKey(platformEntry.key)) {

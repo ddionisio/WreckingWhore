@@ -9,7 +9,7 @@ public struct AMEditorResource {
         
     public static GUISkin LoadSkin(string name) {
         if(skinsDir == null) skinsDir = GetDir(name + ".guiskin");
-        return Resources.LoadAssetAtPath(string.Format("{0}{1}.guiskin", skinsDir, name), typeof(GUISkin)) as GUISkin;
+        return AssetDatabase.LoadAssetAtPath(string.Format("{0}{1}.guiskin", skinsDir, name), typeof(GUISkin)) as GUISkin;
     }
 
     //public static Texture LoadTexture(string name) {
@@ -22,7 +22,7 @@ public struct AMEditorResource {
 
     public static Texture LoadEditorTexture(string name) {
         if(textureEditorDir == null) textureEditorDir = GetDir(name + ".png");
-        return Resources.LoadAssetAtPath(string.Format("{0}{1}.png", textureEditorDir, name), typeof(Texture)) as Texture;
+        return AssetDatabase.LoadAssetAtPath(string.Format("{0}{1}.png", textureEditorDir, name), typeof(Texture)) as Texture;
     }
 
     private static string GetDir(string filename) {

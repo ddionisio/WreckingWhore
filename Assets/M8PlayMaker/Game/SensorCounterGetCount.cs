@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Triggers")]
-    [Tooltip("Get count from SensorCounter")]
+    [HutongGames.PlayMaker.Tooltip("Get count from SensorCounter")]
     public class SensorCounterGetCount : FSMActionComponentBase<SensorCounter> {
         [RequiredField]
         [UIHint(UIHint.Variable)]

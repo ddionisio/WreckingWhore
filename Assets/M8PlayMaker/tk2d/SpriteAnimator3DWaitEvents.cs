@@ -3,13 +3,13 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate tk2D")]
-    [Tooltip("Wait for events to happen for animator.")]
+    [HutongGames.PlayMaker.Tooltip("Wait for events to happen for animator.")]
     public class SpriteAnimator3DWaitEvents : FSMActionComponentBase<SpriteAnimator3D> {
 
-        [Tooltip("Trigger event defined in the clip. The event holds the following triggers infos: the eventInt, eventInfo and eventFloat properties")]
+        [HutongGames.PlayMaker.Tooltip("Trigger event defined in the clip. The event holds the following triggers infos: the eventInt, eventInfo and eventFloat properties")]
         public FsmEvent animationTriggerEvent;
 
-        [Tooltip("Animation complete event. The event holds the clipId reference")]
+        [HutongGames.PlayMaker.Tooltip("Animation complete event. The event holds the clipId reference")]
         public FsmEvent animationCompleteEvent;
 
         public override void Reset() {

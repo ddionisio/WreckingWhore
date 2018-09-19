@@ -1,0 +1,14 @@
+{
+"companyName": "Renegadeware",
+"productName": "WreckingWhore",
+"dataUrl": "Build-WebGL.data.unityweb",
+"asmCodeUrl": "Build-WebGL.asm.code.unityweb",
+"asmMemoryUrl": "Build-WebGL.asm.memory.unityweb",
+"asmFrameworkUrl": "Build-WebGL.asm.framework.unityweb",
+"TOTAL_MEMORY": 134217728,
+"graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20",
+"cacheControl": {"default": "must-revalidate"}
+}
